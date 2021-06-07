@@ -5592,7 +5592,7 @@ local get_id = get_id:gsub('#game',Num_Games)
 local get_id = get_id:gsub('#photos',Total_Photp) 
 sendPhoto(msg.chat_id_,msg.id_,BROK.photos_[0].sizes_[1].photo_.persistent_id_,get_id)
 else
-sendPhoto(msg.chat_id_,msg.id_,BROK.photos_[0].sizes_[1].photo_.persistent_id_,'- '..Description..' .\n- ايديك : '..Id..' .\n- معرفك : '..UserName_User..' .\n- رتبتك : '..Status_Gps..' .\n- رتبة الكروب : '..rtpa..' .\nرسائلك : '..NumMsg..' .\n- السحكات : '..message_edit..' .\n- وقت الانضمام : '..tarek..' .\n- تفاعلك : '..TotalMsg..' .\n- مجوهراتك : '..Num_Games)
+sendPhoto(msg.chat_id_,msg.id_,BROK.photos_[0].sizes_[1].photo_.persistent_id_,'- '..Description..' .\n- ايديك : '..Id..' .\n- معرفك : '..UserName_User..' .\n- رتبتك : '..Status_Gps..' .\n- رتبة الكروب : '..rtpa..' .\n- رسائلك : '..NumMsg..' .\n- السحكات : '..message_edit..' .\n- وقت الانضمام : '..tarek..' .\n- تفاعلك : '..TotalMsg..' .\n- مجوهراتك : '..Num_Games)
 end
 else
 send(msg.chat_id_, msg.id_,'- معندك صورة .\n'..'\n- ايديك : '..Id..' .\n- معرفك : ['..UserName_User..'] .\n- رتبتك : '..Status_Gps..'\n- رتبة الكروب : '..rtpa..' .\n📨┇رسائلك ~⪼ '..NumMsg..' .\n- السحكات : '..message_edit..' .\n- وقت الانضمام : '..tarek..' .\n- تفاعلك : '..TotalMsg..' .\n- مجوهراتك : '..Num_Games..' .') 
@@ -5685,7 +5685,7 @@ local Status_Gps = database:get(bot_id.."PASTORE:Comd:New:rt:User:"..msg.chat_id
 local message_edit = database:get(bot_id..'PASTORE:message_edit'..msg.chat_id_..data.id_) or 0
 local Num_Games = database:get(bot_id.."aaaZaa:Msg_User"..msg.chat_id_..":"..data.id_) or 0
 local Add_Mem = database:get(bot_id.."PASTORE:Add:Memp"..msg.chat_id_..":"..data.id_) or 0
-send(msg.chat_id_, msg.id_,'- ايديه : '..Id..' .\n- رسائله : '..NumMsg..'\n- معرفه : ['..UserName_User..'] .\n- تفاعله : '..TotalMsg..' .\nرتبته : '..Status_Gps..' .\n- تعديلاته : '..message_edit..' .\n- جهاته : '..Add_Mem..' .') 
+send(msg.chat_id_, msg.id_,'- ايديه : '..Id..' .\n- رسائله : '..NumMsg..'\n- معرفه : ['..UserName_User..'] .\n- تفاعله : '..TotalMsg..' .\n- رتبته : '..Status_Gps..' .\n- تعديلاته : '..message_edit..' .\n- جهاته : '..Add_Mem..' .') 
 end,nil)   
 else
 send(msg.chat_id_, msg.id_,'⌔︙لا يوجد حساب بهذا المعرف .')
@@ -6478,36 +6478,19 @@ send(msg.chat_id_,msg.id_,"⌔︙تم حذف جميع الملفات .")
 return false
 end
 if text == 'نقل الاحصائيات' and DevPASTORE(msg) then
-local Users = database:smembers('PASTORE:'..bot_id.."userss")
-local Groups = database:smembers('PASTORE:'..bot_id..'groups') 
+local Users = database:smembers('PASTORE:'..bot_id.."User_Bot")
+local Groups = database:smembers('PASTORE:'..bot_id..'Chek:Groups') 
 for i = 1, #Groups do
 database:sadd(bot_id..'PASTORE:Chek:Groups',Groups[i])  
-local list1 = database:smembers('PASTORE:'..bot_id..'creatorbasic:'..Groups[i])
-for k,v in pairs(list1) do
-database:sadd(bot_id.."PASTORE:Basic:Constructor"..Groups[i], v)
-end
-local list2 = database:smembers('PASTORE:'..bot_id..'creator:'..Groups[i])
-for k,v in pairs(list2) do
-database:sadd(bot_id.."PASTORE:Constructor"..Groups[i], v)
-end
-local list3 = database:smembers('PASTORE:'..bot_id..'owners:'..Groups[i])
-for k,v in pairs(list3) do
-database:sadd(bot_id.."PASTORE:Manager"..Groups[i], v)
-end
-local list4 = database:smembers('PASTORE:'..bot_id..'mods:'..Groups[i])
-for k,v in pairs(list4) do
-database:sadd(bot_id.."PASTORE:Mod:User"..Groups[i], v)
-end
-database:set(bot_id.."PASTORE:Lock:tagservrbot"..Groups[i],true)   
-list ={"Lock:Bot:kick","Lock:User:Name","Lock:hashtak","Lock:Cmd","Lock:Link","Lock:forward","Lock:Keyboard","Lock:geam","Lock:Photo","Lock:Animation","Lock:Video","Lock:Audio","Lock:vico","Lock:Sticker","Lock:Document","Lock:Unsupported","Lock:Markdaun","Lock:Contact","Lock:Spam"}
-for i,lock in pairs(list) do 
-database:set(bot_id..'PASTORE:'..lock..Groups[i],"del")    
-end
 end
 for i = 1, #Users do
 database:sadd(bot_id..'PASTORE:UsersBot',Users[i])  
 end
-send(msg.chat_id_, msg.id_,'⌔︙تم نقل : '..#Groups..' كروب .\n⌔︙تم نقل : '..#Users..' مشترك .\n⌔︙من التحديث القديم الى التحديث الجديد .')
+send(msg.chat_id_, msg.id_,'⌔︙تم نقل : '..#Groups..' كروب\n⌔︙تم نقل : '..#Users..' مشترك \n⌔︙من التحديث القديم الى التحديث الجديد')
+end
+if text == 'حذف كليشه المطور' and DevPASTORE(msg) then
+database:del(bot_id..'PASTORE:Text_Dev')
+send(msg.chat_id_, msg.id_,'⌔︙ تم حذف كليشه المطور')
 end
 if text == 'حذف كليشة المطور' and DevPASTORE(msg) then
 database:del(bot_id..'PASTORE:Text_Dev')
@@ -6555,26 +6538,21 @@ if text == "تحديث" and DevPASTORE(msg) then
 dofile("PASTORE.lua")  
 send(msg.chat_id_, msg.id_, "⌔︙تم التحديث بنجاح .")
 end
-if text == 'السورس' or text == 'سورس' or text == 'ياسورس' or text == 'يا سورس' then
-local Text =[[
-◈︙Source PASTORE .
-
+if text == 'السورس' or text == 'سورس' or text == 'ياسورس' or text == 'يا سورس' then  
+Text = [[
+┌───────  ───────┐
+⌔︙*𝘸𝘦𝘭𝘤𝘰𝘮𝘦 𝘵𝘰 𝘴𝘰𝘶𝘳𝘤𝘦 𝑷𝒂𝑺𝒕𝑶𝒓𝑬*
+    ┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+⌔︙[𝘱𝘢𝘴𝘵𝘰𝘳𝘦 𝘵𝘦𝘢𝘮](https://t.me/ieeo3s)
+    ┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+⌔︙[𝘪𝘯𝘧𝘰𝘳𝘮𝘢𝘵𝘪𝘰𝘯 𝘱𝘢𝘴𝘵𝘰𝘳𝘦](https://t.me/TKSLX)
+    ┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+⌔︙[𝘥𝘦𝘷𝘦𝘭𝘰𝘱𝘦𝘳](https://t.me/XPKKK)
+    ┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+⌔︙[𝘛𝘸𝘴 𝘱𝘢𝘴𝘵𝘰𝘳𝘦](https://t.me/llIsIlI_bot)
+└───────  ───────┘
 ]]
-keyboard = {} 
-keyboard.inline_keyboard = {
-
-{
-{text = '- Source PASTORE .', url = "https://t.me/ieeo3s"}
-},
-{
-{text = '- SainT .', url = "https://t.me/nn1nnn"}
-},
-{
-{text = '- MY BOT .', url = "https://t.me/SJJBOT"}
-},
-}
-local msg_id = msg.id_/2097152/0.5
-https.request("https://api.telegram.org/bot"..token..'/sendMessage?chat_id=' .. msg.chat_id_ .. '&text=' .. URL.escape(Text).."&reply_to_message_id="..msg_id.."&parse_mode=markdown&disable_web_page_preview=true&reply_markup="..JSON.encode(keyboard))
+send(msg.chat_id_, msg.id_,Text)
 end
 if text == 'حذف' or text == 'رابط الحذف' or text == 'بوت الحذف' then
 Text = [[
