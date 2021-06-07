@@ -6608,7 +6608,7 @@ end
 
 if text == "بوت" then
 Namebot = (database:get(bot_id.."PASTORE:Name:Bot") or "باستوري")
-send(msg.chat_id_, msg.id_,'*اسمي '..Namebot..'*')
+send(msg.chat_id_, msg.id_,"اسمي القميل ["..Namebot.."] ") 
 end
 if text == "تغير اسم البوت" or text == "تغيير اسم البوت" or text == "حذف اسم البوت" then 
 if DevPASTORE(msg) then
