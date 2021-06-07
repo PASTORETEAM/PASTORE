@@ -6579,7 +6579,7 @@ database:set(bot_id.."PASTORE:Left:Bot"..msg.chat_id_,true)
 send(msg.chat_id_, msg.id_, "⌔︙تم تعطيل مغادرة البوت") 
 return false 
 end
-if text == (database:get(bot_id.."PASTORE:Name:Bot") or "بلاك") then
+if text == (database:get(bot_id.."PASTORE:Name:Bot") or "باستوري") then
 if AddChannel(msg.sender_user_id_) == false then
 local textchuser = database:get(bot_id..'text:ch:user')
 if textchuser then
@@ -6589,7 +6589,7 @@ send(msg.chat_id_, msg.id_,'⌔︙عـليك الاشـتࢪاك في قنـاة
 end
 return false
 end
-Namebot = (database:get(bot_id.."PASTORE:Name:Bot") or "بلاك")
+Namebot = (database:get(bot_id.."PASTORE:Name:Bot") or "باستوري")
 local namebot = {
 "عمري فداك "..Namebot.. " كول حب ",
 "كول حبيبي ؟ اني "..Namebot,
@@ -6611,7 +6611,7 @@ return false
 end
 
 if text == "بوت" then
-Namebot = (database:get(bot_id.."PASTORE:Name:Bot") or "بلاك")
+Namebot = (database:get(bot_id.."PASTORE:Name:Bot") or "باستوري")
 send(msg.chat_id_, msg.id_,'*اسمي '..Namebot..'*')
 end
 if text == "تغير اسم البوت" or text == "تغيير اسم البوت" or text == "حذف اسم البوت" then 
@@ -8366,7 +8366,7 @@ if res == 200 then
 local Get_info, res = pcall(JSON.decode,Get_Files);
 vardump(res.plugins_)
 if Get_info then
-local TextS = "\n⌔︙اهلا بك في متجر ملفات بلاك\n⌔︙يوجد في المتجر ملف الردود\n⌔︙يتم ادراج الملفات في التحديثات القادمه \n— — — — — — — — — \n"
+local TextS = "\n⌔︙اهلا بك في متجر ملفات باستوري\n⌔︙يوجد في المتجر ملف الردود\n⌔︙يتم ادراج الملفات في التحديثات القادمه \n— — — — — — — — — \n"
 local TextE = "\n— — — — — — — — — \n⌔︙تدل علامة (✔) الملف مفعل\n".."⌔︙تدل علامة (✖) الملف معطل\n"
 local NumFile = 0
 for name,Info in pairs(res.plugins_) do
@@ -8487,15 +8487,15 @@ end
 if text == 'السورس' or text == 'سورس' or text == 'ياسورس' or text == 'يا سورس' then  
 Text = [[
 ┌───────  ───────┐
-⋄︙*𝘸𝘦𝘭𝘤𝘰𝘮𝘦 𝘵𝘰 𝘴𝘰𝘶𝘳𝘤𝘦 𝑷𝒂𝑺𝒕𝑶𝒓𝑬*
+⌔︙*𝘸𝘦𝘭𝘤𝘰𝘮𝘦 𝘵𝘰 𝘴𝘰𝘶𝘳𝘤𝘦 𝑷𝒂𝑺𝒕𝑶𝒓𝑬*
     ┈┈┈┈┈┈┈┈┈┈┈┈┈┈
-⋄︙[𝘱𝘢𝘴𝘵𝘰𝘳𝘦 𝘵𝘦𝘢𝘮](https://t.me/ieeo3s)
+⌔︙[𝘱𝘢𝘴𝘵𝘰𝘳𝘦 𝘵𝘦𝘢𝘮](https://t.me/ieeo3s)
     ┈┈┈┈┈┈┈┈┈┈┈┈┈┈
-⋄︙[𝘪𝘯𝘧𝘰𝘳𝘮𝘢𝘵𝘪𝘰𝘯 𝘱𝘢𝘴𝘵𝘰𝘳𝘦](https://t.me/TKSLX)
+⌔︙[𝘪𝘯𝘧𝘰𝘳𝘮𝘢𝘵𝘪𝘰𝘯 𝘱𝘢𝘴𝘵𝘰𝘳𝘦](https://t.me/TKSLX)
     ┈┈┈┈┈┈┈┈┈┈┈┈┈┈
-⋄︙[𝘥𝘦𝘷𝘦𝘭𝘰𝘱𝘦𝘳](https://t.me/XPKKK)
+⌔︙[𝘥𝘦𝘷𝘦𝘭𝘰𝘱𝘦𝘳](https://t.me/XPKKK)
     ┈┈┈┈┈┈┈┈┈┈┈┈┈┈
-⋄︙[𝘛𝘸𝘴 𝘱𝘢𝘴𝘵𝘰𝘳𝘦](https://t.me/llIsIlI_bot)
+⌔︙[𝘛𝘸𝘴 𝘱𝘢𝘴𝘵𝘰𝘳𝘦](https://t.me/llIsIlI_bot)
 └───────  ───────┘
 ]]
 send(msg.chat_id_, msg.id_,Text)
@@ -8999,6 +8999,7 @@ local keyboard = {
 {'- الاشتراك الاجباري ⌔ .'},
 {'اذاعه خاص ⌔','اذاعه ⌔'},
 {'تحديث السورس ⌔','تحديث الملفات ⌔'},
+{'معلومات السيرفر ⌔'}, 
 {'الغاء ⌔'}
 }
 send_inline_key(msg.chat_id_,Text,keyboard)
@@ -9152,6 +9153,21 @@ end
 if text == 'تعطيل التواصل ⌔' then  
 database:set(bot_id..'Texting:In:Bv',true) 
 send(msg.chat_id_, msg.id_,'⌔︙ تم تعطيل التواصل ') 
+end
+if text == 'معلومات السيرفر ⌔' then 
+send(msg.chat_id_, msg.id_, io.popen([[
+linux_version=`lsb_release -ds`
+memUsedPrc=`free -m | awk 'NR==2{printf "%sMB/%sMB {%.2f%}\n", $3,$2,$3*100/$2 }'`
+HardDisk=`df -lh | awk '{if ($6 == "/") { print $3"/"$2" ~ {"$5"}" }}'`
+CPUPer=`top -b -n1 | grep "Cpu(s)" | awk '{print $2 + $4}'`
+uptime=`uptime | awk -F'( |,|:)+' '{if ($7=="min") m=$6; else {if ($7~/^day/) {d=$6;h=$8;m=$9} else {h=$6;m=$7}}} {print d+0,"days,",h+0,"hours,",m+0,"minutes."}'`
+echo '⇗ نظام التشغيل ⇖•\n*»» '"$linux_version"'*' 
+echo '*———————————~*\n✺✔{ الذاكره العشوائيه } ⇎\n*»» '"$memUsedPrc"'*'
+echo '*———————————~*\n✺✔{ وحـده الـتـخـزيـن } ⇎\n*»» '"$HardDisk"'*'
+echo '*———————————~*\n✺✔{ الـمــعــالــج } ⇎\n*»» '"`grep -c processor /proc/cpuinfo`""Core ~ {$CPUPer%} "'*'
+echo '*———————————~*\n✺✔{ الــدخــول } ⇎\n*»» '`whoami`'*'
+echo '*———————————~*\n✺✔{ مـده تـشغيـل الـسـيـرفـر }⇎\n*»» '"$uptime"'*'
+]]):read('*all'))  
 end
 if text =='الاحصائيات ⌔' then
 local Groups = database:scard(bot_id..'PASTORE:Chek:Groups')  
@@ -9815,7 +9831,7 @@ if NewCmmd then
 data.message_.content_.text_ = (NewCmmd or data.message_.content_.text_)
 end
 end
-local Name_Bot = (database:get(bot_id.."PASTORE:Name:Bot") or "بلاك")
+local Name_Bot = (database:get(bot_id.."PASTORE:Name:Bot") or "باستوري")
 if not database:get(bot_id.."PASTORE:Fun_Bots"..msg.chat_id_) then
 if text ==  ""..Name_Bot..' شنو رئيك بهاذا' and tonumber(msg.reply_to_message_id_) > 0 then     
 function FunBot(extra, result, success) 
