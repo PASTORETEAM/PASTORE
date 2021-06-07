@@ -519,8 +519,8 @@ function Reply_Status(msg,user_id,status,text)
 tdcli_function ({ID = "GetUser",user_id_ = user_id},function(arg,data) 
 if data.first_name_ ~= false then
 local UserName = (data.username_ or "ieeo3s")
-local NameUser = "[- BLacK 𝖲𝗈𝗎𝗋𝖼𝖾 .](https://t.me/ieeo3s)\n•━━━━━━ 𝑷𝑨 ━━━━━━━•\n⌔︙بواسطه -› ["..data.first_name_.."](T.me/"..UserName..")"
-local NameUserr = "[- BLacK 𝖲𝗈𝗎𝗋𝖼𝖾 .](https://t.me/ieeo3s)\n•━━━━━━ 𝑷𝑨 ━━━━━━━•\n⌔︙اسم المستخدم -› ["..data.first_name_.."](T.me/"..UserName..")"
+local NameUser = "[- 𝑷𝒂𝒔𝒕𝒐𝒓𝒆 𝑺𝒐𝒖𝒓𝒄𝒆 .](https://t.me/ieeo3s)\n— — — — — — — — —\n⌔︙بواسطه -› ["..data.first_name_.."](T.me/"..UserName..")"
+local NameUserr = "[- 𝑷𝒂𝒔𝒕𝒐𝒓𝒆 𝑺𝒐𝒖𝒓𝒄𝒆 .](https://t.me/ieeo3s)\n— — — — — — — — —\n⌔︙اسم المستخدم -› ["..data.first_name_.."](T.me/"..UserName..")"
 if status == "lock" then
 send(msg.chat_id_, msg.id_,NameUser.."\n"..text.."\n— — — — — — — — —\n⌔︙تم تنفيذ الامر بخاصيه ( المسح )\n")
 return false
@@ -2451,7 +2451,7 @@ return false
 end
 if text == ("الثانويين") and DevPASTORE(msg) then
 local list = database:smembers(bot_id.."DEV:Sudo:T")
-t = "\n⌔︙قائمة مطورين الثانويين للبوت \n•━━━━━━ 𝑷𝑨 ━━━━━━━• \n"
+t = "\n⌔︙قائمة مطورين الثانويين للبوت \n— — — — — — — — — \n"
 for k,v in pairs(list) do
 local username = database:get(bot_id.."PASTORE:User:Name" .. v)
 if username then
@@ -2565,7 +2565,7 @@ send(msg.chat_id_, msg.id_, "\n⌔︙تم مسح المحظورين")
 end
 if text == ("قائمه العام") and DevPASTORE(msg) then
 local list = database:smembers(bot_id.."PASTORE:GBan:User")
-t = "\n⌔︙قائمة المحظورين عام \n•━━━━━━ 𝑷𝑨 ━━━━━━━• \n"
+t = "\n⌔︙قائمة المحظورين عام \n— — — — — — — — — \n"
 for k,v in pairs(list) do
 local username = database:get(bot_id.."PASTORE:User:Name" .. v)
 if username then
@@ -2582,7 +2582,7 @@ return false
 end
 if text == ("المطورين") and DevPASTORE(msg) then
 local list = database:smembers(bot_id.."PASTORE:Sudo:User")
-t = "\n⌔︙قائمة مطورين البوت \n•━━━━━━ 𝑷𝑨 ━━━━━━━• \n"
+t = "\n⌔︙قائمة مطورين البوت \n— — — — — — — — — \n"
 for k,v in pairs(list) do
 local username = database:get(bot_id.."PASTORE:User:Name" .. v)
 if username then
@@ -2598,7 +2598,7 @@ send(msg.chat_id_, msg.id_, t)
 end
 if text == "المنشئين الاساسين" and DevBot(msg) then
 local list = database:smembers(bot_id.."PASTORE:Basic:Constructor"..msg.chat_id_)
-t = "\n⌔︙قائمة المنشئين الاساسين \n•━━━━━━ 𝑷𝑨 ━━━━━━━• \n"
+t = "\n⌔︙قائمة المنشئين الاساسين \n— — — — — — — — — \n"
 for k,v in pairs(list) do
 local username = database:get(bot_id.."PASTORE:User:Name" .. v)
 if username then
@@ -2624,7 +2624,7 @@ end
 return false
 end
 local list = database:smembers(bot_id.."PASTORE:Constructor"..msg.chat_id_)
-t = "\n⌔︙قائمة المنشئين \n•━━━━━━ 𝑷𝑨 ━━━━━━━• \n"
+t = "\n⌔︙قائمة المنشئين \n— — — — — — — — — \n"
 for k,v in pairs(list) do
 local username = database:get(bot_id.."PASTORE:User:Name" .. v)
 if username then
@@ -2649,7 +2649,7 @@ end
 return false
 end
 local list = database:smembers(bot_id.."PASTORE:Manager"..msg.chat_id_)
-t = "\n⌔︙قائمة المدراء \n•━━━━━━ 𝑷𝑨 ━━━━━━━• \n"
+t = "\n⌔︙قائمة المدراء \n— — — — — — — — — \n"
 for k,v in pairs(list) do
 local username = database:get(bot_id.."PASTORE:User:Name" .. v)
 if username then
@@ -2674,7 +2674,7 @@ end
 return false
 end
 local list = database:smembers(bot_id.."PASTORE:Mod:User"..msg.chat_id_)
-t = "\n⌔︙قائمة الادمنيه \n•━━━━━━ 𝑷𝑨 ━━━━━━━• \n"
+t = "\n⌔︙قائمة الادمنيه \n— — — — — — — — — \n"
 for k,v in pairs(list) do
 local username = database:get(bot_id.."PASTORE:User:Name" .. v)
 if username then
@@ -2690,7 +2690,7 @@ send(msg.chat_id_, msg.id_, t)
 end
 if text == ("المميزين") and Addictive(msg) then
 local list = database:smembers(bot_id.."PASTORE:Special:User"..msg.chat_id_)
-t = "\n⌔︙قائمة مميزين المجموعه \n•━━━━━━ 𝑷𝑨 ━━━━━━━• \n"
+t = "\n⌔︙قائمة مميزين المجموعه \n— — — — — — — — — \n"
 for k,v in pairs(list) do
 local username = database:get(bot_id.."PASTORE:User:Name" .. v)
 if username then
@@ -2715,7 +2715,7 @@ end
 return false
 end
 local list = database:smembers(bot_id.."PASTORE:Muted:User"..msg.chat_id_)
-t = "\n⌔︙قائمة المكتومين \n•━━━━━━ 𝑷𝑨 ━━━━━━━• \n"
+t = "\n⌔︙قائمة المكتومين \n— — — — — — — — — \n"
 for k,v in pairs(list) do
 local username = database:get(bot_id.."PASTORE:User:Name" .. v)
 if username then
@@ -2741,7 +2741,7 @@ end
 return false
 end
 local list = database:smembers(bot_id.."PASTORE:Ban:User"..msg.chat_id_)
-t = "\n⌔︙قائمة محظورين المجموعه \n•━━━━━━ 𝑷𝑨 ━━━━━━━• \n"
+t = "\n⌔︙قائمة محظورين المجموعه \n— — — — — — — — — \n"
 for k,v in pairs(list) do
 local username = database:get(bot_id.."PASTORE:User:Name" .. v)
 if username then
@@ -2908,7 +2908,7 @@ return false
 end
 if text == "المالكين" and DevBot(msg) then
 local list = database:smembers(bot_id.."creator"..msg.chat_id_)
-t = "\n⌔︙قائمة مالكين المجموعه \n•━━━━━━ 𝑷𝑨 ━━━━━━━• \n"
+t = "\n⌔︙قائمة مالكين المجموعه \n— — — — — — — — — \n"
 for k,v in pairs(list) do
 local username = database:get(bot_id.."User:Name" .. v)
 if username then
@@ -3588,19 +3588,19 @@ function by_reply(extra, result, success)
 tdcli_function ({ID = "GetUser",user_id_ = result.sender_user_id_},function(arg,data) 
 local PASTORErt = database:get(bot_id.."PASTORE:Comd:New:rt:bot:"..RTPA..msg.chat_id_)
 if PASTORErt == "مميز" and Addictive(msg) then
-send(msg.chat_id_, msg.id_,"[- BLacK 𝖲𝗈𝗎𝗋𝖼𝖾 .](https://t.me/ieeo3s)\n•━━━━━━ 𝑷𝑨 ━━━━━━━•\n⌔︙العضو -› ["..data.first_name_.."](t.me/"..(data.username_ or "ieeo3s")..")".."\n⌔︙تم رفعه "..RTPA.." هنا\n")
+send(msg.chat_id_, msg.id_,"[- 𝑷𝒂𝒔𝒕𝒐𝒓𝒆 𝑺𝒐𝒖𝒓𝒄𝒆 .](https://t.me/ieeo3s)\n— — — — — — — — —\n⌔︙العضو -› ["..data.first_name_.."](t.me/"..(data.username_ or "ieeo3s")..")".."\n⌔︙تم رفعه "..RTPA.." هنا\n")
 database:set(bot_id.."PASTORE:Comd:New:rt:User:"..msg.chat_id_..result.sender_user_id_,RTPA) 
 database:sadd(bot_id.."PASTORE:Special:User"..msg.chat_id_,result.sender_user_id_)  
 elseif PASTORErt == "ادمن" and Owner(msg) then 
-send(msg.chat_id_, msg.id_,"[- BLacK 𝖲𝗈𝗎𝗋𝖼𝖾 .](https://t.me/ieeo3s)\n•━━━━━━ 𝑷𝑨 ━━━━━━━•\n⌔︙العضو -› ["..data.first_name_.."](t.me/"..(data.username_ or "ieeo3s")..")".."\n⌔︙تم رفعه "..RTPA.." هنا\n")
+send(msg.chat_id_, msg.id_,"[- 𝑷𝒂𝒔𝒕𝒐𝒓𝒆 𝑺𝒐𝒖𝒓𝒄𝒆 .](https://t.me/ieeo3s)\n— — — — — — — — —\n⌔︙العضو -› ["..data.first_name_.."](t.me/"..(data.username_ or "ieeo3s")..")".."\n⌔︙تم رفعه "..RTPA.." هنا\n")
 database:set(bot_id.."PASTORE:Comd:New:rt:User:"..msg.chat_id_..result.sender_user_id_,RTPA)
 database:sadd(bot_id.."PASTORE:Mod:User"..msg.chat_id_,result.sender_user_id_)  
 elseif PASTORErt == "مدير" and Constructor(msg) then
-send(msg.chat_id_, msg.id_,"[- BLacK 𝖲𝗈𝗎𝗋𝖼𝖾 .](https://t.me/ieeo3s)\n•━━━━━━ 𝑷𝑨 ━━━━━━━•\n⌔︙العضو -› ["..data.first_name_.."](t.me/"..(data.username_ or "ieeo3s")..")".."\n⌔︙تم رفعه "..RTPA.." هنا\n")
+send(msg.chat_id_, msg.id_,"[- 𝑷𝒂𝒔𝒕𝒐𝒓𝒆 𝑺𝒐𝒖𝒓𝒄𝒆 .](https://t.me/ieeo3s)\n— — — — — — — — —\n⌔︙العضو -› ["..data.first_name_.."](t.me/"..(data.username_ or "ieeo3s")..")".."\n⌔︙تم رفعه "..RTPA.." هنا\n")
 database:set(bot_id.."PASTORE:Comd:New:rt:User:"..msg.chat_id_..result.sender_user_id_,RTPA)  
 database:sadd(bot_id.."PASTORE:Manager"..msg.chat_id_,result.sender_user_id_)  
 elseif PASTORErt == "عضو" and Addictive(msg) then
-send(msg.chat_id_, msg.id_,"[- BLacK 𝖲𝗈𝗎𝗋𝖼𝖾 .](https://t.me/ieeo3s)\n•━━━━━━ 𝑷𝑨 ━━━━━━━•\n⌔︙العضو -› ["..data.first_name_.."](t.me/"..(data.username_ or "ieeo3s")..")".."\n⌔︙تم رفعه "..RTPA.." هنا\n")
+send(msg.chat_id_, msg.id_,"[- 𝑷𝒂𝒔𝒕𝒐𝒓𝒆 𝑺𝒐𝒖𝒓𝒄𝒆 .](https://t.me/ieeo3s)\n— — — — — — — — —\n⌔︙العضو -› ["..data.first_name_.."](t.me/"..(data.username_ or "ieeo3s")..")".."\n⌔︙تم رفعه "..RTPA.." هنا\n")
 end
 end,nil)   
 end   
@@ -3623,19 +3623,19 @@ function by_reply(extra, result, success)
 tdcli_function ({ID = "GetUser",user_id_ = result.sender_user_id_},function(arg,data) 
 local PASTORErt = database:get(bot_id.."PASTORE:Comd:New:rt:bot:"..RTPA..msg.chat_id_)
 if PASTORErt == "مميز" and Addictive(msg) then
-send(msg.chat_id_, msg.id_,"[- BLacK 𝖲𝗈𝗎𝗋𝖼𝖾 .](https://t.me/ieeo3s)\n•━━━━━━ 𝑷𝑨 ━━━━━━━•\n⌔︙العضو -› ["..data.first_name_.."](t.me/"..(data.username_ or "ieeo3s")..")".."\n⌔︙تم تنزيله من "..RTPA.." هنا\n")  
+send(msg.chat_id_, msg.id_,"[- 𝑷𝒂𝒔𝒕𝒐𝒓𝒆 𝑺𝒐𝒖𝒓𝒄𝒆 .](https://t.me/ieeo3s)\n— — — — — — — — —\n⌔︙العضو -› ["..data.first_name_.."](t.me/"..(data.username_ or "ieeo3s")..")".."\n⌔︙تم تنزيله من "..RTPA.." هنا\n")  
 database:srem(bot_id.."PASTORE:Special:User"..msg.chat_id_,result.sender_user_id_)  
 database:del(bot_id.."PASTORE:Comd:New:rt:User:"..msg.chat_id_..result.sender_user_id_)
 elseif PASTORErt == "ادمن" and Owner(msg) then 
-send(msg.chat_id_, msg.id_,"[- BLacK 𝖲𝗈𝗎𝗋𝖼𝖾 .](https://t.me/ieeo3s)\n•━━━━━━ 𝑷𝑨 ━━━━━━━•\n⌔︙العضو -› ["..data.first_name_.."](t.me/"..(data.username_ or "ieeo3s")..")".."\n⌔︙تم تنزيله من "..RTPA.." هنا\n")  
+send(msg.chat_id_, msg.id_,"[- 𝑷𝒂𝒔𝒕𝒐𝒓𝒆 𝑺𝒐𝒖𝒓𝒄𝒆 .](https://t.me/ieeo3s)\n— — — — — — — — —\n⌔︙العضو -› ["..data.first_name_.."](t.me/"..(data.username_ or "ieeo3s")..")".."\n⌔︙تم تنزيله من "..RTPA.." هنا\n")  
 database:srem(bot_id.."PASTORE:Mod:User"..msg.chat_id_,result.sender_user_id_) 
 database:del(bot_id.."PASTORE:Comd:New:rt:User:"..msg.chat_id_..result.sender_user_id_)
 elseif PASTORErt == "مدير" and Constructor(msg) then
-send(msg.chat_id_, msg.id_,"[- BLacK 𝖲𝗈𝗎𝗋𝖼𝖾 .](https://t.me/ieeo3s)\n•━━━━━━ 𝑷𝑨 ━━━━━━━•\n⌔︙العضو -› ["..data.first_name_.."](t.me/"..(data.username_ or "ieeo3s")..")".."\n⌔︙تم تنزيله من "..RTPA.." هنا\n")  
+send(msg.chat_id_, msg.id_,"[- 𝑷𝒂𝒔𝒕𝒐𝒓𝒆 𝑺𝒐𝒖𝒓𝒄𝒆 .](https://t.me/ieeo3s)\n— — — — — — — — —\n⌔︙العضو -› ["..data.first_name_.."](t.me/"..(data.username_ or "ieeo3s")..")".."\n⌔︙تم تنزيله من "..RTPA.." هنا\n")  
 database:srem(bot_id.."PASTORE:Manager"..msg.chat_id_,result.sender_user_id_)  
 database:del(bot_id.."PASTORE:Comd:New:rt:User:"..msg.chat_id_..result.sender_user_id_)
 elseif PASTORErt == "عضو" and Addictive(msg) then
-send(msg.chat_id_, msg.id_,"[- BLacK 𝖲𝗈𝗎𝗋𝖼𝖾 .](https://t.me/ieeo3s)\n•━━━━━━ 𝑷𝑨 ━━━━━━━•\n⌔︙العضو -› ["..data.first_name_.."](t.me/"..(data.username_ or "ieeo3s")..")".."\n⌔︙تم تنزيله من "..RTPA.." هنا\n")  
+send(msg.chat_id_, msg.id_,"[- 𝑷𝒂𝒔𝒕𝒐𝒓𝒆 𝑺𝒐𝒖𝒓𝒄𝒆 .](https://t.me/ieeo3s)\n— — — — — — — — —\n⌔︙العضو -› ["..data.first_name_.."](t.me/"..(data.username_ or "ieeo3s")..")".."\n⌔︙تم تنزيله من "..RTPA.." هنا\n")  
 end
 end,nil)   
 end   
@@ -3658,19 +3658,19 @@ function py_username(extra, result, success)
 if result.id_ then
 local PASTORErt = database:get(bot_id.."PASTORE:Comd:New:rt:bot:"..text1[2]..msg.chat_id_)
 if PASTORErt == "مميز" and Addictive(msg) then
-send(msg.chat_id_, msg.id_,"[- BLacK 𝖲𝗈𝗎𝗋𝖼𝖾 .](https://t.me/ieeo3s)\n•━━━━━━ 𝑷𝑨 ━━━━━━━•\n⌔︙العضو -› ["..result.title_.."](t.me/"..(text1[3] or "ieeo3s")..")".."\n⌔︙تم رفعه "..text1[2].." هنا")   
+send(msg.chat_id_, msg.id_,"[- 𝑷𝒂𝒔𝒕𝒐𝒓𝒆 𝑺𝒐𝒖𝒓𝒄𝒆 .](https://t.me/ieeo3s)\n— — — — — — — — —\n⌔︙العضو -› ["..result.title_.."](t.me/"..(text1[3] or "ieeo3s")..")".."\n⌔︙تم رفعه "..text1[2].." هنا")   
 database:sadd(bot_id.."PASTORE:Special:User"..msg.chat_id_,result.id_)  
 database:set(bot_id.."PASTORE:Comd:New:rt:User:"..msg.chat_id_..result.id_,text1[2])
 elseif PASTORErt == "ادمن" and Owner(msg) then 
-send(msg.chat_id_, msg.id_,"[- BLacK 𝖲𝗈𝗎𝗋𝖼𝖾 .](https://t.me/ieeo3s)\n•━━━━━━ 𝑷𝑨 ━━━━━━━•\n⌔︙العضو -› ["..result.title_.."](t.me/"..(text1[3] or "ieeo3s")..")".."\n⌔︙تم رفعه "..text1[2].." هنا")   
+send(msg.chat_id_, msg.id_,"[- 𝑷𝒂𝒔𝒕𝒐𝒓𝒆 𝑺𝒐𝒖𝒓𝒄𝒆 .](https://t.me/ieeo3s)\n— — — — — — — — —\n⌔︙العضو -› ["..result.title_.."](t.me/"..(text1[3] or "ieeo3s")..")".."\n⌔︙تم رفعه "..text1[2].." هنا")   
 database:sadd(bot_id.."PASTORE:Mod:User"..msg.chat_id_,result.id_)  
 database:set(bot_id.."PASTORE:Comd:New:rt:User:"..msg.chat_id_..result.id_,text1[2])
 elseif PASTORErt == "مدير" and Constructor(msg) then
-send(msg.chat_id_, msg.id_,"[- BLacK 𝖲𝗈𝗎𝗋𝖼𝖾 .](https://t.me/ieeo3s)\n•━━━━━━ 𝑷𝑨 ━━━━━━━•\n⌔︙العضو -› ["..result.title_.."](t.me/"..(text1[3] or "ieeo3s")..")".."\n⌔︙تم رفعه "..text1[2].." هنا")   
+send(msg.chat_id_, msg.id_,"[- 𝑷𝒂𝒔𝒕𝒐𝒓𝒆 𝑺𝒐𝒖𝒓𝒄𝒆 .](https://t.me/ieeo3s)\n— — — — — — — — —\n⌔︙العضو -› ["..result.title_.."](t.me/"..(text1[3] or "ieeo3s")..")".."\n⌔︙تم رفعه "..text1[2].." هنا")   
 database:sadd(bot_id.."PASTORE:Manager"..msg.chat_id_,result.id_)  
 database:set(bot_id.."PASTORE:Comd:New:rt:User:"..msg.chat_id_..result.id_,text1[2])
 elseif PASTORErt == "عضو" and Addictive(msg) then
-send(msg.chat_id_, msg.id_,"[- BLacK 𝖲𝗈𝗎𝗋𝖼𝖾 .](https://t.me/ieeo3s)\n•━━━━━━ 𝑷𝑨 ━━━━━━━•\n⌔︙العضو -› ["..result.title_.."](t.me/"..(text1[3] or "ieeo3s")..")".."\n⌔︙تم رفعه "..text1[2].." هنا")   
+send(msg.chat_id_, msg.id_,"[- 𝑷𝒂𝒔𝒕𝒐𝒓𝒆 𝑺𝒐𝒖𝒓𝒄𝒆 .](https://t.me/ieeo3s)\n— — — — — — — — —\n⌔︙العضو -› ["..result.title_.."](t.me/"..(text1[3] or "ieeo3s")..")".."\n⌔︙تم رفعه "..text1[2].." هنا")   
 end
 else
 info = "⌔︙المعرف غلط"
@@ -3696,19 +3696,19 @@ function py_username(extra, result, success)
 if result.id_ then
 local PASTORErt = database:get(bot_id.."PASTORE:Comd:New:rt:bot:"..text1[2]..msg.chat_id_)
 if PASTORErt == "مميز" and Addictive(msg) then
-send(msg.chat_id_, msg.id_,"[- BLacK 𝖲𝗈𝗎𝗋𝖼𝖾 .](https://t.me/ieeo3s)\n•━━━━━━ 𝑷𝑨 ━━━━━━━•\n⌔︙العضو -› ["..result.title_.."](t.me/"..(text1[3] or "ieeo3s")..")".."\n⌔︙تم تنريله من "..text1[2].." هنا")   
+send(msg.chat_id_, msg.id_,"[- 𝑷𝒂𝒔𝒕𝒐𝒓𝒆 𝑺𝒐𝒖𝒓𝒄𝒆 .](https://t.me/ieeo3s)\n— — — — — — — — —\n⌔︙العضو -› ["..result.title_.."](t.me/"..(text1[3] or "ieeo3s")..")".."\n⌔︙تم تنريله من "..text1[2].." هنا")   
 database:srem(bot_id.."PASTORE:Special:User"..msg.chat_id_,result.id_)  
 database:del(bot_id.."PASTORE:Comd:New:rt:User:"..msg.chat_id_..result.id_)
 elseif PASTORErt == "ادمن" and Owner(msg) then 
-send(msg.chat_id_, msg.id_,"[- BLacK 𝖲𝗈𝗎𝗋𝖼𝖾 .](https://t.me/ieeo3s)\n•━━━━━━ 𝑷𝑨 ━━━━━━━•\n⌔︙العضو -› ["..result.title_.."](t.me/"..(text1[3] or "ieeo3s")..")".."\n⌔︙تم تنريله من "..text1[2].." هنا")   
+send(msg.chat_id_, msg.id_,"[- 𝑷𝒂𝒔𝒕𝒐𝒓𝒆 𝑺𝒐𝒖𝒓𝒄𝒆 .](https://t.me/ieeo3s)\n— — — — — — — — —\n⌔︙العضو -› ["..result.title_.."](t.me/"..(text1[3] or "ieeo3s")..")".."\n⌔︙تم تنريله من "..text1[2].." هنا")   
 database:srem(bot_id.."PASTORE:Mod:User"..msg.chat_id_,result.id_)  
 database:del(bot_id.."PASTORE:Comd:New:rt:User:"..msg.chat_id_..result.id_)
 elseif PASTORErt == "مدير" and Constructor(msg) then
-send(msg.chat_id_, msg.id_,"[- BLacK 𝖲𝗈𝗎𝗋𝖼𝖾 .](https://t.me/ieeo3s)\n•━━━━━━ 𝑷𝑨 ━━━━━━━•\n⌔︙العضو -› ["..result.title_.."](t.me/"..(text1[3] or "ieeo3s")..")".."\n⌔︙تم تنريله من "..text1[2].." هنا")   
+send(msg.chat_id_, msg.id_,"[- 𝑷𝒂𝒔𝒕𝒐𝒓𝒆 𝑺𝒐𝒖𝒓𝒄𝒆 .](https://t.me/ieeo3s)\n— — — — — — — — —\n⌔︙العضو -› ["..result.title_.."](t.me/"..(text1[3] or "ieeo3s")..")".."\n⌔︙تم تنريله من "..text1[2].." هنا")   
 database:srem(bot_id.."PASTORE:Manager"..msg.chat_id_,result.id_)  
 database:del(bot_id.."PASTORE:Comd:New:rt:User:"..msg.chat_id_..result.id_)
 elseif PASTORErt == "عضو" and Addictive(msg) then
-send(msg.chat_id_, msg.id_,"[- BLacK 𝖲𝗈𝗎𝗋𝖼𝖾 .](https://t.me/ieeo3s)\n•━━━━━━ 𝑷𝑨 ━━━━━━━•\n⌔︙العضو -› ["..result.title_.."](t.me/"..(text1[3] or "ieeo3s")..")".."\n⌔︙تم تنريله من "..text1[2].." هنا")   
+send(msg.chat_id_, msg.id_,"[- 𝑷𝒂𝒔𝒕𝒐𝒓𝒆 𝑺𝒐𝒖𝒓𝒄𝒆 .](https://t.me/ieeo3s)\n— — — — — — — — —\n⌔︙العضو -› ["..result.title_.."](t.me/"..(text1[3] or "ieeo3s")..")".."\n⌔︙تم تنريله من "..text1[2].." هنا")   
 end
 else
 info = "⌔︙المعرف غلط"
@@ -5059,7 +5059,7 @@ return false
 end
 tdcli_function ({ID = "GetChannelMembers",channel_id_ = msg.chat_id_:gsub("-100",""),filter_ = {ID = "ChannelMembersBots"},offset_ = 0,limit_ = 100 },function(extra,result,success)
 local admins = result.members_  
-text = "\n⌔︙قائمة البوتات الموجوده \n•━━━━━━ 𝑷𝑨 ━━━━━━━• \n"
+text = "\n⌔︙قائمة البوتات الموجوده \n— — — — — — — — — \n"
 local n = 0
 local t = 0
 for i=0 , #admins do 
@@ -5078,7 +5078,7 @@ send(msg.chat_id_, msg.id_, "⌔︙لا توجد بوتات في المجموع�
 return false 
 end
 if #admins == i then 
-local a = "\n•━━━━━━ 𝑷𝑨 ━━━━━━━• \n⌔︙عدد البوتات التي هنا >> {"..n.."} بوت\n"
+local a = "\n— — — — — — — — — \n⌔︙عدد البوتات التي هنا >> {"..n.."} بوت\n"
 local f = "⌔︙عدد البوتات التي هي ادمن >> {"..t.."}\n⌔︙ملاحضه علامة ال (✯) تعني ان البوت ادمن \n⌔"
 send(msg.chat_id_, msg.id_, text..a..f)
 end
@@ -5157,7 +5157,7 @@ end
 return false
 end
 local list = database:smembers(bot_id.."PASTORE:List:Cmd:Group:New"..msg.chat_id_.."")
-t = "⌔︙قائمه الاوامر المضافه  \n•━━━━━━ 𝑷𝑨 ━━━━━━━• \n"
+t = "⌔︙قائمه الاوامر المضافه  \n— — — — — — — — — \n"
 for k,v in pairs(list) do
 Cmds = database:get(bot_id.."PASTORE:Set:Cmd:Group:New1"..msg.chat_id_..":"..v)
 if Cmds then 
@@ -5410,7 +5410,7 @@ end
 return false
 end
 local list = database:smembers(bot_id.."PASTORE:MN:TF"..msg.chat_id_)
-t = "\n⌔︙قائمة المنظفين \n•━━━━━━ 𝑷𝑨 ━━━━━━━• \n"
+t = "\n⌔︙قائمة المنظفين \n— — — — — — — — — \n"
 for k,v in pairs(list) do
 local username = database:get(bot_id.."PASTORE:User:Name" .. v)
 if username then
@@ -5562,7 +5562,7 @@ send(msg.chat_id_, msg.id_,"⌔︙تم مسح ردود المدير")
 end
 if text == ("ردود المدير") and Owner(msg) then
 local list = database:smembers(bot_id.."PASTORE:List:Manager"..msg.chat_id_.."")
-text = "⌔︙قائمه ردود المدير \n•━━━━━━ 𝑷𝑨 ━━━━━━━•\n"
+text = "⌔︙قائمه ردود المدير \n— — — — — — — — —\n"
 for k,v in pairs(list) do
 if database:get(bot_id.."PASTORE:Add:Rd:Manager:Gif"..v..msg.chat_id_) then
 db = "متحركه 🎭"
@@ -5836,7 +5836,7 @@ send(msg.chat_id_, msg.id_,"⌔︙تم مسح ردود المطور")
 end
 if text == ("ردود المطور") and DevPASTORE(msg) then 
 local list = database:smembers(bot_id.."PASTORE:List:Rd:Sudo")
-text = "\n⌔︙قائمة ردود المطور \n•━━━━━━ 𝑷𝑨 ━━━━━━━•\n"
+text = "\n⌔︙قائمة ردود المطور \n— — — — — — — — —\n"
 for k,v in pairs(list) do
 if database:get(bot_id.."PASTORE:Add:Rd:Sudo:Gif"..v) then
 db = "متحركه 🎭"
@@ -6180,7 +6180,7 @@ end
 return false
 end
 tdcli_function({ID = "GetChannelMembers",channel_id_ = msg.chat_id_:gsub("-100",""), offset_ = 0,limit_ = 200},function(ta,taha)
-local t = "\n⌔︙ قائمة الاعضاء \n•━━━━━━ 𝑷𝑨 ━━━━━━━• \n"
+local t = "\n⌔︙ قائمة الاعضاء \n— — — — — — — — — \n"
 x = 0
 local list = taha.members_
 for k, v in pairs(list) do
@@ -6609,7 +6609,9 @@ end
 
 if text == "بوت" then
 Namebot = (database:get(bot_id.."PASTORE:Name:Bot") or "بلاك")
-send(msg.chat_id_, msg.id_,'*اسمي '..Namebot..'*','راح نموت بكورونا ونته بعدك تصيح بوت','لتخليني ارجع لحركاتي لقديمه وردا ترا اسمي روزي','لتكول بوت اسمي ["..Namebot.."]😒🔪','صيحولي ["..Namebot.."]كافي بوت 😒🔪','اسمي القميل روزي😚♥️')
+send(msg.chat_id_, msg.id_,'"باوع لك خليني احبك وصيحلي باسمي "..Name_Bot.. "",
+"لتخليني ارجع لحركاتي لقديمه وردا ترا اسمي "..Name_Bot.. "",
+"راح نموت بكورونا ونته بعدك تصيح بوت")
 end
 if text == "تغير اسم البوت" or text == "تغيير اسم البوت" or text == "حذف اسم البوت" then 
 if DevPASTORE(msg) then
@@ -6983,10 +6985,10 @@ end
 Num_Flood = database:hget(bot_id.."PASTORE:flooding:settings:"..msg.chat_id_,"floodmax") or 0
 local text = 
 "*\n⌔︙ااعدادات المجموعه "..
-"\n•━━━━━━ 𝑷𝑨 ━━━━━━━• "..
+"\n— — — — — — — — — "..
 "\n⌔︙علامة ال {✓} تعني مفعل"..
 "\n⌔︙علامة ال {✘} تعني معطل"..
-"\n•━━━━━━ 𝑷𝑨 ━━━━━━━• "..
+"\n— — — — — — — — — "..
 "\n⌔︙الروابط -› "..lock_links..
 "\n".."⌔︙المعرفات -› "..lock_user..
 "\n".."⌔︙التاك -› "..lock_hash..
@@ -6996,7 +6998,7 @@ local text =
 "\n".."⌔︙الاشعارات -› "..lock_tagservr..
 "\n".."⌔︙الماركدون -› "..lock_mark..
 "\n".."⌔︙التعديل -› "..lock_edit..
-"\n•━━━━━━ 𝑷𝑨 ━━━━━━━• "..
+"\n— — — — — — — — — "..
 "\n".."⌔︙الكلايش -› "..lock_spam..
 "\n".."⌔︙الكيبورد -› "..lock_inlin..
 "\n".."⌔︙الاغاني -› "..lock_vico..
@@ -7005,7 +7007,7 @@ local text =
 "\n".."⌔︙الدردشه -› "..lock_text..
 "\n".."⌔︙الفيديو -› "..lock_ved..
 "\n".."⌔︙الصور -› "..lock_photo..
-"\n•━━━━━━ 𝑷𝑨 ━━━━━━━• "..
+"\n— — — — — — — — — "..
 "\n".."⌔︙الصوت -› "..lock_muse..
 "\n".."⌔︙الملصقات -› "..lock_ste..
 "\n".."⌔︙الجهات -› "..lock_phon..
@@ -7775,7 +7777,7 @@ return false
 end
 Teext = [[
 ⌔︙قائمه الالعاب الموجوده
-•━━━━━━ 𝑷𝑨 ━━━━━━━• 
+— — — — — — — — — 
 ⌔︙لعبة البات -› بات
 ⌔︙لعبة التخمين -› خمن
 ⌔︙لعبه الاسرع -› الاسرع
@@ -7785,7 +7787,7 @@ Teext = [[
 ⌔︙لعبة العكس -› العكس 
 ⌔︙لعبة الحزوره -› حزوره
 ⌔︙لعبة المعاني -› معاني
-•━━━━━━ 𝑷𝑨 ━━━━━━━• 
+— — — — — — — — — 
 ⌔︙مجوهراتي -› لعرض عدد الارباح
 ⌔︙بيع مجوهراتي + العدد -› لستبدال كل مجوهره ب50 رساله
 ]]
@@ -8062,13 +8064,13 @@ if text and text:match("^زخرفه (.*)$") and database:get(bot_id.."PASTORE:zh
 local TextZhrfa = text:match("^زخرفه (.*)$")
 zh = https.request('https://black-source.tk/BlackTeAM/frills.php?en='..URL.escape(TextZhrfa)..'')
 zx = JSON.decode(zh)
-t = "\n⌔️︙قائمه الزخرفه \n•━━━━━━ 𝑷𝑨 ━━━━━━━• \n"
+t = "\n⌔️︙قائمه الزخرفه \n— — — — — — — — — \n"
 i = 0
 for k,v in pairs(zx.ok) do
 i = i + 1
 t = t..i.."-  `"..v.."` \n"
 end
-send(msg.chat_id_, msg.id_, t..'•━━━━━━ 𝑷𝑨 ━━━━━━━•\n⌔︙اضغط على الاسم ليتم نسخه')
+send(msg.chat_id_, msg.id_, t..'— — — — — — — — —\n⌔︙اضغط على الاسم ليتم نسخه')
 end
 if text == "تعطيل الابراج" and Owner(msg) then
 send(msg.chat_id_, msg.id_, '⌯ تم تعطيل الابراج')
@@ -8168,7 +8170,7 @@ st = https.request('https://black-source.tk/BlackTeAM/ImageInfo.php?token='..tok
 eker = JSON.decode(st)
 if eker.ok.Info == "Indecent" then
 local list = database:smembers(bot_id.."PASTORE:Basic:Constructor"..msg.chat_id_)
-t = "⌔︙ المنشئين الاساسين تعالو مخرب \n•━━━━━━ 𝑷𝑨 ━━━━━━━• \n"
+t = "⌔︙ المنشئين الاساسين تعالو مخرب \n— — — — — — — — — \n"
 for k,v in pairs(list) do
 local username = database:get(bot_id.."PASTORE:User:Name" .. v)
 if username then
@@ -8190,7 +8192,7 @@ Srrt = https.request('https://black-source.tk/BlackTeAM/ImageInfo.php?token='..t
 Sto = JSON.decode(Srrt)
 if Sto.ok.Info == "Indecent" then
 local list = database:smembers(bot_id.."PASTORE:Basic:Constructor"..msg.chat_id_)
-t = "⌔︙ المنشئين الاساسين تعالو مخرب \n•━━━━━━ 𝑷𝑨 ━━━━━━━• \n"
+t = "⌔︙ المنشئين الاساسين تعالو مخرب \n— — — — — — — — — \n"
 for k,v in pairs(list) do
 local username = database:get(bot_id.."PASTORE:User:Name" .. v)
 if username then
@@ -8346,7 +8348,7 @@ end,nil)
 end
 end
 if text == 'الملفات' and DevPASTORE(msg) then
-t = '⌔︙جميع الملفات : \n•━━━━━━ 𝑷𝑨 ━━━━━━━• \n'
+t = '⌔︙جميع الملفات : \n— — — — — — — — — \n'
 i = 0
 for v in io.popen('ls PASTORE_Files'):lines() do
 if v:match(".lua$") then
@@ -8363,8 +8365,8 @@ if res == 200 then
 local Get_info, res = pcall(JSON.decode,Get_Files);
 vardump(res.plugins_)
 if Get_info then
-local TextS = "\n⌔︙اهلا بك في متجر ملفات بلاك\n⌔︙يوجد في المتجر ملف الردود\n⌔︙يتم ادراج الملفات في التحديثات القادمه \n•━━━━━━ 𝑷𝑨 ━━━━━━━• \n"
-local TextE = "\n•━━━━━━ 𝑷𝑨 ━━━━━━━• \n⌔︙تدل علامة (✔) الملف مفعل\n".."⌔︙تدل علامة (✖) الملف معطل\n"
+local TextS = "\n⌔︙اهلا بك في متجر ملفات بلاك\n⌔︙يوجد في المتجر ملف الردود\n⌔︙يتم ادراج الملفات في التحديثات القادمه \n— — — — — — — — — \n"
+local TextE = "\n— — — — — — — — — \n⌔︙تدل علامة (✔) الملف مفعل\n".."⌔︙تدل علامة (✖) الملف معطل\n"
 local NumFile = 0
 for name,Info in pairs(res.plugins_) do
 local Check_File_is_Found = io.open("PASTORE_Files/"..name,"r")
@@ -8522,13 +8524,13 @@ return false
 end
 Text = [[
 ⌔︙ هناك {5} اوامر لعرضها
-•━━━━━━ 𝑷𝑨 ━━━━━━━•
+— — — — — — — — —
 ⌔︙ م1 -› لعرض اوامر الحمايه
 ⌔︙ م2 -› لعرض اوامر الادمنيه
 ⌔︙ م3 -› لعرض اوامر المدراء
 ⌔︙ م4 -› لعرض اوامر المنشئين
 ⌔︙ م5 -› لعرض اوامر المطورين
-•━━━━━━ 𝑷𝑨 ━━━━━━━• 
+— — — — — — — — — 
 [⌔︙Ch Source](t.me/ieeo3s)
 ]]
 send(msg.chat_id_, msg.id_,Text)
@@ -8546,10 +8548,10 @@ return false
 end
 Text = [[
 ⌔︙اوامر حمايه المجموعه
-•━━━━━━ 𝑷𝑨 ━━━━━━━• 
+— — — — — — — — — 
 ⌔︙قفل/فتح + الاوامر الادناه 
 ⌔︙قفل/فتح + الامر بالتقيد ⌔︙بالطرد ⌔︙بالكتم
-•━━━━━━ 𝑷𝑨 ━━━━━━━• 
+— — — — — — — — — 
 ⌔︙الروابط
 ⌔︙المعرف
 ⌔︙التاك
@@ -8575,7 +8577,7 @@ Text = [[
 ⌔︙التكرار
 ⌔︙الكلايش
 ⌔︙السيلفي
-•━━━━━━ 𝑷𝑨 ━━━━━━━• 
+— — — — — — — — — 
 [⌔︙Ch Source](t.me/ieeo3s)
 ]]
 send(msg.chat_id_, msg.id_,Text)
@@ -8593,31 +8595,31 @@ return false
 end
 Text = [[
 ⌔︙اوامر الادمنيه
-•━━━━━━ 𝑷𝑨 ━━━━━━━•  
+— — — — — — — — —  
  ⌔︙تفعيل/تعطيل الترحيب
  ⌔︙اضف /مسح صلاحيه
 ⌔︙وضع تكرار + العدد
 ⌔︙رفع/تنزيل مميز
 ⌔︙عدد الكروب
 ⌔︙تاك للكل
-•━━━━━━ 𝑷𝑨 ━━━━━━━•
+— — — — — — — — —
 ⌔︙كتم
 ⌔︙حظر
 ⌔︙طرد
 ⌔︙منع
 ⌔︙تقيد
-•━━━━━━ 𝑷𝑨 ━━━━━━━•
+— — — — — — — — —
  ⌔︙المكتومين
 ⌔︙المحظورين
 ⌔︙المميزين
 ⌔︙الصلاحيات
 ⌔︙قائمه المنع
-•━━━━━━ 𝑷𝑨 ━━━━━━━•
+— — — — — — — — —
 ⌔︙الغاء كتم
 ⌔︙الغاء حظر
 ⌔︙الغاء منع
 ⌔︙الغاء تقيد
-•━━━━━━ 𝑷𝑨 ━━━━━━━•
+— — — — — — — — —
 ⌔︙الغاء تثبيت
 ⌔︙الاعدادات
 ⌔︙تثبيت
@@ -8629,14 +8631,14 @@ Text = [[
 ⌔︙سحكاتي
 ⌔︙رسائلي
 ⌔︙كشف البوتات
-•━━━━━━ 𝑷𝑨 ━━━━━━━• 
+— — — — — — — — — 
 ⌔︙وضع اسم
 ⌔︙وضع رابط
 ⌔︙وضع صوره
 ⌔︙وضع وصف
 ⌔︙وضع قوانين
 ⌔︙وضع ترحيب
-•━━━━━━ 𝑷𝑨 ━━━━━━━• 
+— — — — — — — — — 
 ⌔︙مسح قائمه المنع
 ⌔︙مسح المحظورين
 ⌔︙مسح المميزين
@@ -8647,7 +8649,7 @@ Text = [[
 ⌔︙مسح الصوره
 ⌔︙مسح الصلاحيات
 ⌔︙مسح الرابط
-•━━━━━━ 𝑷𝑨 ━━━━━━━• 
+— — — — — — — — — 
 [⌔︙Ch Source](t.me/ieeo3s)
 ]]
 send(msg.chat_id_, msg.id_,Text)
@@ -8680,7 +8682,7 @@ Text = [[
 ⌔︙اضف رد
 ⌔︙حذف رد
 ⌔︙تنظيف + عدد
-•━━━━━━ 𝑷𝑨 ━━━━━━━• 
+— — — — — — — — — 
 ⌔︙تفعيل/تعطيل الرفع
 ⌔︙تفعيل/تعطيل الايدي
 ⌔︙تفعيل/تعطيل الابراج
@@ -8694,7 +8696,7 @@ Text = [[
 ⌔︙تفعيل/تعطيل الايدي بالصوره
 ⌔︙تفعيل/تعطيل اوامر التحشيش
 ⌔︙تفعيل/تعطيل الرابط/جلب الرابط
-•━━━━━━ 𝑷𝑨 ━━━━━━━• 
+— — — — — — — — — 
 [⌔︙Ch Source](t.me/ieeo3s)
 ]]
 send(msg.chat_id_, msg.id_,Text)
@@ -8712,15 +8714,15 @@ return false
 end
 Text = [[
 ⌔︙اوامر المنشئين الاساسين 
-•━━━━━━ 𝑷𝑨 ━━━━━━━• 
+— — — — — — — — — 
 ⌔︙رفع/تنزيل منشئ اساسي
 ⌔︙رفع/تنزيل منشئ
 ⌔︙المنشئين
 ⌔︙مسح المنشئين
 ⌔︙مسح ردود المدير
-•━━━━━━ 𝑷𝑨 ━━━━━━━• 
+— — — — — — — — — 
 ⌔︙اوامر المنشئين
-•━━━━━━ 𝑷𝑨 ━━━━━━━• 
+— — — — — — — — — 
 ⌔︙رفع/تنزيل مدير
 ⌔︙المدراء
 ⌔︙مسح المدراء
@@ -8730,7 +8732,7 @@ Text = [[
 ⌔︙حذف/مسح الاوامر المضافه
 ⌔︙اضف رسائل + العدد بالرد
 ⌔︙اضف مجوهرات + العدد بالرد
-•━━━━━━ 𝑷𝑨 ━━━━━━━• 
+— — — — — — — — — 
 [⌔︙Ch Source](t.me/ieeo3s)
 ]]
 send(msg.chat_id_, msg.id_,Text)
@@ -8739,7 +8741,7 @@ end
 if text == 'م5' and DevBot(msg) then
 Text = [[
 ⌔︙اوامر المطور الاساسي  
-•━━━━━━ 𝑷𝑨 ━━━━━━━• 
+— — — — — — — — — 
 ⌔︙تحديث 
 ⌔︙الملفات 
 ⌔︙المتجر 
@@ -8767,7 +8769,7 @@ Text = [[
 ⌔︙تفعيل ملف + اسم الملف
 ⌔︙تعطيل ملف + اسم الملف
 ⌔︙ تعين عدد الاعضاء + العدد
-•━━━━━━ 𝑷𝑨 ━━━━━━━• 
+— — — — — — — — — 
 ⌔︙غادر 
 ⌔︙اذاعه 
 ⌔︙رفع منشئ 
@@ -8780,7 +8782,7 @@ Text = [[
 ⌔︙المنشئين الاساسين 
 ⌔︙رفع/تنزيل منشئ اساسي
 ⌔︙مسح المنشئين الاساسين
-•━━━━━━ 𝑷𝑨 ━━━━━━━• 
+— — — — — — — — — 
 [⌔︙Ch Source](t.me/ieeo3s)
 ]]
 send(msg.chat_id_, msg.id_,Text)
@@ -9037,7 +9039,7 @@ end
 if text and text:match("^/start msg(.*)$") then
 sl = text:match("^/start msg(.*)$")
 local list = database:smembers(bot_id.."PASTORE:List:Filter:text"..sl)
-t = "\n⌔︙قائمة الكلمات الممنوعه \n•━━━━━━ 𝑷𝑨 ━━━━━━━• \n"
+t = "\n⌔︙قائمة الكلمات الممنوعه \n— — — — — — — — — \n"
 for k,v in pairs(list) do
 if v then
 t = t..""..k.."- ["..v.."]\n"
@@ -9409,7 +9411,7 @@ send(msg.chat_id_, msg.id_,'⌔︙تم حذف كليشه ستارت')
 end
 if text == ("الثانويين ⌔") then
 local list = database:smembers(bot_id.."DEV:Sudo:T")
-t = "\n⌔︙قائمة مطورين الثانويين للبوت \n•━━━━━━ 𝑷𝑨 ━━━━━━━• \n"
+t = "\n⌔︙قائمة مطورين الثانويين للبوت \n— — — — — — — — — \n"
 for k,v in pairs(list) do
 local username = database:get(bot_id.."PASTORE:User:Name" .. v)
 if username then
@@ -9493,7 +9495,7 @@ send(msg.chat_id_, msg.id_, "\n⌔︙ تم مسح قائمة المطورين  "
 end
 if text == ("قائمه العام ⌔") and DevPASTORE(msg) then
 local list = database:smembers(bot_id.."PASTORE:GBan:User")
-t = "\n⌔︙قائمة المحظورين عام \n•━━━━━━ 𝑷𝑨 ━━━━━━━• \n"
+t = "\n⌔︙قائمة المحظورين عام \n— — — — — — — — — \n"
 for k,v in pairs(list) do
 local username = database:get(bot_id.."PASTORE:User:Name" .. v)
 if username then
@@ -9510,7 +9512,7 @@ return false
 end
 if text == ("المطورين ⌔") and DevPASTORE(msg) then
 local list = database:smembers(bot_id.."PASTORE:Sudo:User")
-t = "\n⌔︙قائمة مطورين البوت \n•━━━━━━ 𝑷𝑨 ━━━━━━━• \n"
+t = "\n⌔︙قائمة مطورين البوت \n— — — — — — — — — \n"
 for k,v in pairs(list) do
 local username = database:get(bot_id.."PASTORE:User:Name" .. v)
 if username then
@@ -9627,7 +9629,7 @@ local idchci = "-100"..idch
 local animation = DAata:match("^animation(.*)$"):gsub('chatid',''):gsub('chatid',''):gsub(idch,''):gsub('-100','')
 local Text ="⌔︙تم اللغاء منعها بنجاح"
 inline = {
-{{text = '⌔︙ BLacK 𝖲𝗈𝗎𝗋𝖼𝖾  .',url='http://t.me/ieeo3s'}},
+{{text = '⌔︙ 𝑷𝒂𝒔𝒕𝒐𝒓𝒆 𝑺𝒐𝒖𝒓𝒄𝒆  .',url='http://t.me/ieeo3s'}},
 }
 https.request("https://api.telegram.org/bot"..token.."/deleteMessage?chat_id="..Chat_id.."&message_id="..msg_idd)
 send_inlin_key(Chat_id,Text,inline)
@@ -9638,7 +9640,7 @@ local idchci = database:get(bot_id.."PASTORE:Filter:msg")
 local photo = DAata:match("^pito(.*)$")
 local Text ="⌔︙تم اللغاء منعها بنجاح"
 inline = {
-{{text = '⌔︙ BLacK 𝖲𝗈𝗎𝗋𝖼𝖾  .',url='http://t.me/ieeo3s'}},
+{{text = '⌔︙ 𝑷𝒂𝒔𝒕𝒐𝒓𝒆 𝑺𝒐𝒖𝒓𝒄𝒆  .',url='http://t.me/ieeo3s'}},
 }
 https.request("https://api.telegram.org/bot"..token.."/deleteMessage?chat_id="..Chat_id.."&message_id="..msg_idd)
 send_inlin_key(Chat_id,Text,inline)
@@ -9650,7 +9652,7 @@ local idchci = "-100"..idch
 local Sticker = DAata:match("^Sticker(.*)$"):gsub('chatid',''):gsub('chatid',''):gsub(idch,''):gsub('-100','')
 local Text ="⌔︙تم اللغاء منعه بنجاح"
 inline = {
-{{text = '⌔︙ BLacK 𝖲𝗈𝗎𝗋𝖼𝖾  .',url='http://t.me/ieeo3s'}},
+{{text = '⌔︙ 𝑷𝒂𝒔𝒕𝒐𝒓𝒆 𝑺𝒐𝒖𝒓𝒄𝒆  .',url='http://t.me/ieeo3s'}},
 }
 https.request("https://api.telegram.org/bot"..token.."/deleteMessage?chat_id="..Chat_id.."&message_id="..msg_idd)
 send_inlin_key(Chat_id,Text,inline)
@@ -9660,7 +9662,7 @@ if DAata and DAata:match("^delallSticker(.*)$") and Addictive(data) then
 local delallSticker = DAata:match("^delallSticker(.*)$")
 local Text ="⌔︙تم اللغاء منع كل المتحركات"
 inline = {
-{{text = '⌔︙ BLacK 𝖲𝗈𝗎𝗋𝖼??  .',url='http://t.me/ieeo3s'}},
+{{text = '⌔︙ 𝑷𝒂𝒔𝒕𝒐𝒓𝒆 𝑺𝒐𝒖𝒓𝒄𝒆  .',url='http://t.me/ieeo3s'}},
 }
 https.request("https://api.telegram.org/bot"..token.."/deleteMessage?chat_id="..Chat_id.."&message_id="..msg_idd)
 send_inlin_key(Chat_id,Text,inline)
@@ -9673,7 +9675,7 @@ if DAata and DAata:match("^delallanimation(.*)$") and Addictive(data) then
 local delallmation = DAata:match("^delallanimation(.*)$")
 local Text ="⌔︙تم اللغاء منع كل المتحركات"
 inline = {
-{{text = '⌔︙ BLacK 𝖲𝗈𝗎𝗋𝖼𝖾  .',url='http://t.me/ieeo3s'}},
+{{text = '⌔︙ 𝑷𝒂𝒔𝒕𝒐𝒓𝒆 𝑺𝒐𝒖𝒓𝒄𝒆  .',url='http://t.me/ieeo3s'}},
 }
 https.request("https://api.telegram.org/bot"..token.."/deleteMessage?chat_id="..Chat_id.."&message_id="..msg_idd)
 send_inlin_key(Chat_id,Text,inline)
@@ -9686,7 +9688,7 @@ if DAata and DAata:match("^delallph(.*)$") and Addictive(data) then
 local delallph = DAata:match("^delallph(.*)$")
 local Text ="⌔︙تم اللغاء منع كل الصور"
 inline = {
-{{text = '⌔︙ BLacK 𝖲𝗈𝗎𝗋𝖼𝖾  .',url='http://t.me/ieeo3s'}},
+{{text = '⌔︙ 𝑷𝒂𝒔𝒕𝒐𝒓𝒆 𝑺𝒐𝒖𝒓𝒄𝒆  .',url='http://t.me/ieeo3s'}},
 }
 https.request("https://api.telegram.org/bot"..token.."/deleteMessage?chat_id="..Chat_id.."&message_id="..msg_idd)
 send_inlin_key(Chat_id,Text,inline)
@@ -9844,7 +9846,7 @@ database:incr(bot_id..'PASTORE:message_edit'..result.chat_id_..result.sender_use
 local Text = result.content_.text_
 if database:get(bot_id.."PASTORE:Lock:edit"..msg.chat_id_) and not Text and not BasicConstructor(result) then
 local list = database:smembers(bot_id.."PASTORE:Basic:Constructor"..msg.chat_id_)
-t = "⌔︙ المنشئين الاساسين تعالو مخرب \n•━━━━━━ 𝑷𝑨 ━━━━━━━• \n"
+t = "⌔︙ المنشئين الاساسين تعالو مخرب \n— — — — — — — — — \n"
 for k,v in pairs(list) do
 local username = database:get(bot_id.."PASTORE:User:Name" .. v)
 if username then
