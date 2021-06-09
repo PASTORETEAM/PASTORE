@@ -475,6 +475,18 @@ message = 'رب التفاعل'
 end 
 return message 
 end
+function AddChannel(User)
+local var = true
+if database:get(bot_id..'add:ch:id') then
+local url , res = https.request("https://api.telegram.org/bot"..token.."/getchatmember?chat_id="..database:get(bot_id..'add:ch:id').."&user_id="..User);
+data = json:decode(url)
+if res ~= 200 or data.result.status == "left" or data.result.status == "kicked" then
+var = false
+end
+end
+return var
+end
+
 function download_to_file(url, file_path) 
 local respbody = {} 
 local options = { url = url, sink = ltn12.sink.table(respbody), redirect = true } 
@@ -1327,6 +1339,50 @@ send(msg.chat_id_, msg.id_,"⌔︙تم حفظ الامر .")
 database:del(bot_id.."PASTORE:Set:Cmd:Group1"..msg.chat_id_..":"..msg.sender_user_id_)
 return false
 end
+if database:get(bot_id.."add:ch:jm" .. msg.chat_id_ .. "" .. msg.sender_user_id_) then 
+if text and text:match("^الغاء$") then 
+send(msg.chat_id_, msg.id_, "• تم الغاء الامر ") 
+database:del(bot_id.."add:ch:jm" .. msg.chat_id_ .. "" .. msg.sender_user_id_)  
+return false  end 
+database:del(bot_id.."add:ch:jm" .. msg.chat_id_ .. "" .. msg.sender_user_id_)  
+local username = string.match(text, "@[%a%d_]+") 
+tdcli_function ({    
+ID = "SearchPublicChat",    
+username_ = username  
+},function(arg,data) 
+if data and data.message_ and data.message_ == "USERNAME_NOT_OCCUPIED" then 
+send(msg.chat_id_, msg.id_, '• المعرف لا يوجد فيه قناة')
+return false  end
+if data and data.type_ and data.type_.ID and data.type_.ID == 'PrivateChatInfo' then
+send(msg.chat_id_, msg.id_, '• عذا لا يمكنك وضع معرف حسابات في الاشتراك ') 
+return false  end
+if data and data.type_ and data.type_.channel_ and data.type_.channel_.is_supergroup_ == true then
+send(msg.chat_id_, msg.id_,'• عذا لا يمكنك وضع معرف مجوعه في الاشتراك ') 
+return false  end
+if data and data.type_ and data.type_.channel_ and data.type_.channel_.is_supergroup_ == false then
+if data and data.type_ and data.type_.channel_ and data.type_.channel_.ID and data.type_.channel_.status_.ID == 'ChatMemberStatusEditor' then
+send(msg.chat_id_, msg.id_,'• البوت ادمن في القناة \n تم تفعيل الاشتراك الاجباري في \n ايدي القناة ('..data.id_..')\n• معرف القناة ([@'..data.type_.channel_.username_..'])') 
+database:set(bot_id..'add:ch:id',data.id_)
+database:set(bot_id..'add:ch:username','@'..data.type_.channel_.username_)
+else
+send(msg.chat_id_, msg.id_,'• البوت ليس ادمن في القناة يرجى ترقيته ادمن ثم اعادة المحاوله ') 
+end
+return false  
+end
+end,nil)
+end
+if database:get(bot_id.."textch:user" .. msg.chat_id_ .. "" .. msg.sender_user_id_) then 
+if text and text:match("^الغاء$") then 
+send(msg.chat_id_, msg.id_, "• تم الغاء الامر ") 
+database:del(bot_id.."textch:user" .. msg.chat_id_ .. "" .. msg.sender_user_id_)  
+return false  end 
+database:del(bot_id.."textch:user" .. msg.chat_id_ .. "" .. msg.sender_user_id_)  
+local texxt = string.match(text, "(.*)") 
+database:set(bot_id..'text:ch:user',texxt)
+send(msg.chat_id_, msg.id_,' تم تغيير رسالة الاشتراك بنجاح ')
+end
+
+
 --------------------------------------------------------------------------------------------------------------
 if Chat_Type == 'GroupBot' then
 if ChekAdd(msg.chat_id_) == true then
@@ -1987,6 +2043,10 @@ texts = "⌔︙تم مسح المدراء ."
 send(msg.chat_id_, msg.id_, texts)
 end
 if text == "مسح الادمنية" and Owner(msg) then
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 database:del(bot_id.."PASTORE:Mod:User"..msg.chat_id_)
 send(msg.chat_id_, msg.id_, "⌔︙تم مسح الادمنية .")
 end
@@ -2294,12 +2354,10 @@ return false
 end
 if text == ("تنزيل مالك") and tonumber(msg.reply_to_message_id_) ~= 0 and DevBot(msg) then 
 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 function Function_PASTORE(extra, result, success)
 database:srem(bot_id.."PASTORE:Basic:Constructor23"..msg.chat_id_, result.sender_user_id_)
 Reply_Status(msg,result.sender_user_id_,"reply","⌔︙تم تنزيله من رتبة المالك .")  
@@ -2310,12 +2368,10 @@ end
 if text and text:match("^تنزيل مالك @(.*)$") and DevBot(msg) then 
 tdcli_function ({ID = "GetChatMember",chat_id_ = msg.chat_id_,user_id_ = msg.sender_user_id_},function(arg,da) 
 if da.status_.ID == "ChatMemberStatusCreator" then
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local username = text:match("^تنزيل مالك @(.*)$")
 function Function_PASTORE(extra, result, success)
 if result.id_ then
@@ -2446,12 +2502,10 @@ end
 end
 
 if text == ("رفع مالك") and tonumber(msg.reply_to_message_id_) ~= 0 and DevBot(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 function Function_PASTORE(extra, result, success)
 database:sadd(bot_id.."PASTORE:Basic:Constructor23"..msg.chat_id_, result.sender_user_id_)
 Reply_Status(msg,result.sender_user_id_,"reply","⌔︙تم رفعه مالك .")  
@@ -2460,12 +2514,10 @@ tdcli_function ({ID = "GetMessage",chat_id_ = msg.chat_id_,message_id_ = tonumbe
 return false
 end
 if text and text:match("^رفع مالك @(.*)$") and DevBot(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local username = text:match("^رفع مالك @(.*)$")
 function Function_PASTORE(extra, result, success)
 if result.id_ then
@@ -2485,12 +2537,10 @@ end
 
 
 if text == ("رفع منشئ اساسي") and tonumber(msg.reply_to_message_id_) ~= 0 and DevBot(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 function Function_PASTORE(extra, result, success)
 database:sadd(bot_id.."PASTORE:Basic:Constructor"..msg.chat_id_, result.sender_user_id_)
 Reply_Status(msg,result.sender_user_id_,"reply","⌔︙تم رفعه منشئ اساسي .")  
@@ -2501,12 +2551,10 @@ end
 if text and text:match("^رفع منشئ اساسي @(.*)$") and not DevBot(msg) then 
 tdcli_function ({ID = "GetChatMember",chat_id_ = msg.chat_id_,user_id_ = msg.sender_user_id_},function(arg,da) 
 if da.status_.ID == "ChatMemberStatusCreator" then
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local username = text:match("^رفع منشئ اساسي @(.*)$")
 function Function_PASTORE(extra, result, success)
 if result.id_ then
@@ -2528,12 +2576,10 @@ end
 if text and text:match("^رفع منشئ اساسي (%d+)$") and not DevBot(msg) then 
 tdcli_function ({ID = "GetChatMember",chat_id_ = msg.chat_id_,user_id_ = msg.sender_user_id_},function(arg,da) 
 if da.status_.ID == "ChatMemberStatusCreator" then
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local userid = text:match("^رفع منشئ اساسي (%d+)$") 
 database:sadd(bot_id.."PASTORE:Basic:Constructor"..msg.chat_id_, userid)
 Reply_Status(msg,userid,"reply","⌔︙تم رفعه منشئ اساسي .")  
@@ -2544,12 +2590,10 @@ end
 if text == ("تنزيل منشئ اساسي") and tonumber(msg.reply_to_message_id_) ~= 0 and not DevBot(msg) then 
 tdcli_function ({ID = "GetChatMember",chat_id_ = msg.chat_id_,user_id_ = msg.sender_user_id_},function(arg,da) 
 if da.status_.ID == "ChatMemberStatusCreator" then
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 function Function_PASTORE(extra, result, success)
 database:srem(bot_id.."PASTORE:Basic:Constructor"..msg.chat_id_, result.sender_user_id_)
 Reply_Status(msg,result.sender_user_id_,"reply","⌔︙تم تنزيله من رتبة المنشئ الاساسي .")  
@@ -2562,12 +2606,10 @@ end
 if text and text:match("^تنزيل منشئ اساسي @(.*)$") and not DevBot(msg) then 
 tdcli_function ({ID = "GetChatMember",chat_id_ = msg.chat_id_,user_id_ = msg.sender_user_id_},function(arg,da) 
 if da.status_.ID == "ChatMemberStatusCreator" then
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local username = text:match("^تنزيل منشئ اساسي @(.*)$")
 function Function_PASTORE(extra, result, success)
 if result.id_ then
@@ -2586,12 +2628,10 @@ end
 if text and text:match("^تنزيل منشئ اساسي (%d+)$") and not DevBot(msg) then 
 tdcli_function ({ID = "GetChatMember",chat_id_ = msg.chat_id_,user_id_ = msg.sender_user_id_},function(arg,da) 
 if da.status_.ID == "ChatMemberStatusCreator" then
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local userid = text:match("^تنزيل منشئ اساسي (%d+)$") 
 database:srem(bot_id.."PASTORE:Basic:Constructor"..msg.chat_id_, userid)
 Reply_Status(msg,userid,"reply","⌔︙تم تنزيله من رتبة المنشئ الاساسي .")  
@@ -2601,12 +2641,10 @@ end,nil)
 end
 
 if text == ("رفع منشئ اساسي") and tonumber(msg.reply_to_message_id_) ~= 0 and Constructoryyu(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 function Function_PASTORE(extra, result, success)
 database:sadd(bot_id.."PASTORE:Basic:Constructor"..msg.chat_id_, result.sender_user_id_)
 Reply_Status(msg,result.sender_user_id_,"reply","⌔︙تم رفعه منشئ اساسي .")  
@@ -2615,12 +2653,10 @@ tdcli_function ({ID = "GetMessage",chat_id_ = msg.chat_id_,message_id_ = tonumbe
 return false
 end
 if text and text:match("^رفع منشئ اساسي @(.*)$") and Constructoryyu(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local username = text:match("^رفع منشئ اساسي @(.*)$")
 function Function_PASTORE(extra, result, success)
 if result.id_ then
@@ -2638,24 +2674,20 @@ tdcli_function ({ID = "SearchPublicChat",username_ = username}, Function_PASTORE
 return false
 end
 if text and text:match("^رفع منشئ اساسي (%d+)$") and Constructoryyu(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local userid = text:match("^رفع منشئ اساسي (%d+)$") 
 database:sadd(bot_id.."PASTORE:Basic:Constructor"..msg.chat_id_, userid)
 Reply_Status(msg,userid,"reply","⌔︙تم رفعه منشئ اساسي .")  
 return false
 end
 if text == ("تنزيل منشئ اساسي") and tonumber(msg.reply_to_message_id_) ~= 0 and Constructoryyu(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 function Function_PASTORE(extra, result, success)
 database:srem(bot_id.."PASTORE:Basic:Constructor"..msg.chat_id_, result.sender_user_id_)
 Reply_Status(msg,result.sender_user_id_,"reply","⌔︙تم تنزيله من رتبة المنشئ الاساسي .")  
@@ -2664,12 +2696,10 @@ tdcli_function ({ID = "GetMessage",chat_id_ = msg.chat_id_,message_id_ = tonumbe
 return false
 end
 if text and text:match("^تنزيل منشئ اساسي @(.*)$") and Constructoryyu(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local username = text:match("^تنزيل منشئ اساسي @(.*)$")
 function Function_PASTORE(extra, result, success)
 if result.id_ then
@@ -2684,12 +2714,10 @@ tdcli_function ({ID = "SearchPublicChat",username_ = username}, Function_PASTORE
 return false
 end
 if text and text:match("^تنزيل منشئ اساسي (%d+)$") and Constructoryyu(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local userid = text:match("^تنزيل منشئ اساسي (%d+)$") 
 database:srem(bot_id.."PASTORE:Basic:Constructor"..msg.chat_id_, userid)
 Reply_Status(msg,userid,"reply","⌔︙تم تنزيله من رتبة المنشئ الاساسي .")  
@@ -2697,12 +2725,10 @@ return false
 end
 
 if text == "رفع منشئ" and tonumber(msg.reply_to_message_id_) ~= 0 and BasicConstructor(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 function Function_PASTORE(extra, result, success)
 database:sadd(bot_id.."PASTORE:Constructor"..msg.chat_id_, result.sender_user_id_)
 Reply_Status(msg,result.sender_user_id_,"reply","⌔︙تم رفعه منشئ .")  
@@ -2710,12 +2736,10 @@ end
 tdcli_function ({ID = "GetMessage",chat_id_ = msg.chat_id_,message_id_ = tonumber(msg.reply_to_message_id_)}, Function_PASTORE, nil)
 end
 if text and text:match("^رفع منشئ @(.*)$") and BasicConstructor(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local username = text:match("^رفع منشئ @(.*)$")
 function Function_PASTORE(extra, result, success)
 if result.id_ then
@@ -2733,12 +2757,10 @@ tdcli_function ({ID = "SearchPublicChat",username_ = username}, Function_PASTORE
 end
 ------------------------------------------------------------------------
 if text and text:match("^رفع منشئ (%d+)$") and BasicConstructor(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local userid = text:match("^رفع منشئ (%d+)$")
 database:sadd(bot_id.."PASTORE:Constructor"..msg.chat_id_, userid)
 Reply_Status(msg,userid,"reply","⌔︙تم رفعه منشئ .")  
@@ -2752,12 +2774,10 @@ tdcli_function ({ID = "GetMessage",chat_id_ = msg.chat_id_,message_id_ = tonumbe
 end
 ------------------------------------------------------------------------
 if text and text:match("^تنزيل منشئ @(.*)$") and BasicConstructor(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local username = text:match("^تنزيل منشئ @(.*)$")
 function Function_PASTORE(extra, result, success)
 if result.id_ then
@@ -2771,24 +2791,20 @@ tdcli_function ({ID = "SearchPublicChat",username_ = username}, Function_PASTORE
 end
 ------------------------------------------------------------------------
 if text and text:match("^تنزيل منشئ (%d+)$") and BasicConstructor(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local userid = text:match("^تنزيل منشئ (%d+)$")
 database:srem(bot_id.."PASTORE:Constructor"..msg.chat_id_, userid)
 Reply_Status(msg,userid,"reply","⌔︙تم تنزيله من رتبة المنشئ .")  
 end
 
 if text == ("رفع مدير") and tonumber(msg.reply_to_message_id_) ~= 0 and Constructor(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 function Function_PASTORE(extra, result, success)
 database:sadd(bot_id.."PASTORE:Manager"..msg.chat_id_, result.sender_user_id_)
 Reply_Status(msg,result.sender_user_id_,"reply","⌔︙تم رفعه مدير .")  
@@ -2817,12 +2833,10 @@ end,nil)
 send(msg.chat_id_, msg.id_,"⌔︙تم مسح 100 من الوسائط .") 
 end
 if text and text:match("^رفع مدير @(.*)$") and Constructor(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local username = text:match("^رفع مدير @(.*)$") 
 function Function_PASTORE(extra, result, success)
 if result.id_ then
@@ -2841,24 +2855,20 @@ return false
 end 
 
 if text and text:match("^رفع مدير (%d+)$") and Constructor(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local userid = text:match("^رفع مدير (%d+)$") 
 database:sadd(bot_id.."PASTORE:Manager"..msg.chat_id_, userid)
 Reply_Status(msg,userid,"reply","⌔︙تم رفعه مدير .")  
 return false
 end  
 if text == ("تنزيل مدير") and tonumber(msg.reply_to_message_id_) ~= 0 and Constructor(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 function Function_PASTORE(extra, result, success)
 database:srem(bot_id.."PASTORE:Manager"..msg.chat_id_, result.sender_user_id_)
 Reply_Status(msg,result.sender_user_id_,"reply","⌔︙تم تنزيله من رتبة المدير .")  
@@ -2867,12 +2877,10 @@ tdcli_function ({ID = "GetMessage",chat_id_ = msg.chat_id_,message_id_ = tonumbe
 return false
 end  
 if text and text:match("^تنزيل مدير @(.*)$") and Constructor(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local username = text:match("^تنزيل مدير @(.*)$")
 function Function_PASTORE(extra, result, success)
 if result.id_ then
@@ -2886,12 +2894,10 @@ tdcli_function ({ID = "SearchPublicChat",username_ = username}, Function_PASTORE
 return false
 end  
 if text and text:match("^تنزيل مدير (%d+)$") and Constructor(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local userid = text:match("^تنزيل مدير (%d+)$") 
 database:srem(bot_id.."PASTORE:Manager"..msg.chat_id_, userid)
 Reply_Status(msg,userid,"reply","⌔︙تم تنزيله من رتبة المدير .")  
@@ -2899,12 +2905,10 @@ return false
 end
 
 if text == ("رفع ادمن") and tonumber(msg.reply_to_message_id_) ~= 0 and Owner(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 if not Constructor(msg) and database:get(bot_id.."Add:Group:Cheking"..msg.chat_id_) then 
 send(msg.chat_id_, msg.id_,'⌔︙الرفع معطل من قبل المنشئين حبيبي .')
 return false
@@ -2917,12 +2921,10 @@ tdcli_function ({ID = "GetMessage",chat_id_ = msg.chat_id_,message_id_ = tonumbe
 return false
 end
 if text and text:match("^رفع ادمن @(.*)$") and Owner(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local username = text:match("^رفع ادمن @(.*)$")
 if not Constructor(msg) and database:get(bot_id.."Add:Group:Cheking"..msg.chat_id_) then 
 send(msg.chat_id_, msg.id_,'⌔︙الرفع معطل من قبل المنشئين حبيبي .')
@@ -2944,12 +2946,10 @@ tdcli_function ({ID = "SearchPublicChat",username_ = username}, Function_PASTORE
 return false
 end
 if text and text:match("^رفع ادمن (%d+)$") and Owner(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local userid = text:match("^رفع ادمن (%d+)$")
 if not Constructor(msg) and database:get(bot_id.."Add:Group:Cheking"..msg.chat_id_) then 
 send(msg.chat_id_, msg.id_,'⌔︙الرفع معطل من المنشئين حبيبي .')
@@ -2960,12 +2960,10 @@ Reply_Status(msg,userid,"reply","⌔︙تم رفعه ادمن .")
 return false
 end
 if text == ("تنزيل ادمن") and tonumber(msg.reply_to_message_id_) ~= 0 and Owner(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 function Function_PASTORE(extra, result, success)
 database:srem(bot_id.."PASTORE:Mod:User"..msg.chat_id_, result.sender_user_id_)
 Reply_Status(msg,result.sender_user_id_,"reply","⌔︙تم تنزيله من رتبة الادمن .")  
@@ -2974,12 +2972,10 @@ tdcli_function ({ID = "GetMessage",chat_id_ = msg.chat_id_,message_id_ = tonumbe
 return false
 end
 if text and text:match("^تنزيل ادمن @(.*)$") and Owner(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local username = text:match("^تنزيل ادمن @(.*)$") 
 function Function_PASTORE(extra, result, success)
 if result.id_ then
@@ -2993,12 +2989,10 @@ tdcli_function ({ID = "SearchPublicChat",username_ = username}, Function_PASTORE
 return false
 end
 if text and text:match("^تنزيل ادمن (%d+)$") and Owner(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local userid = text:match("^تنزيل ادمن (%d+)$")
 database:srem(bot_id.."PASTORE:Mod:User"..msg.chat_id_, userid)
 Reply_Status(msg,userid,"reply","⌔︙تم تنزيله من رتبة الادمن .")  
@@ -3006,12 +3000,10 @@ return false
 end
 
 if text == ("رفع مميز") and tonumber(msg.reply_to_message_id_) ~= 0 and Addictive(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 if not Constructor(msg) and database:get(bot_id.."Add:Group:Cheking"..msg.chat_id_) then 
 send(msg.chat_id_, msg.id_,'⌔︙الرفع معطل من المنشئين حبيبي .')
 return false
@@ -3024,12 +3016,10 @@ tdcli_function ({ID = "GetMessage",chat_id_ = msg.chat_id_,message_id_ = tonumbe
 return false
 end
 if text and text:match("^رفع مميز @(.*)$") and Addictive(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local username = text:match("^رفع مميز @(.*)$") 
 if not Constructor(msg) and database:get(bot_id.."Add:Group:Cheking"..msg.chat_id_) then 
 send(msg.chat_id_, msg.id_,'⌔︙الرفع معطل من المنشئين حبيبي .')
@@ -3052,12 +3042,10 @@ return false
 end
 
 if text and text:match("^رفع مميز (%d+)$") and Addictive(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local userid = text:match("^رفع مميز (%d+)$")
 if not Constructor(msg) and database:get(bot_id.."Add:Group:Cheking"..msg.chat_id_) then 
 send(msg.chat_id_, msg.id_,'⌔︙الرفع معطل من المنشئين حبيبي .')
@@ -3069,12 +3057,10 @@ return false
 end
 
 if (text == ("تنزيل مميز")) and tonumber(msg.reply_to_message_id_) ~= 0 and Addictive(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 function Function_PASTORE(extra, result, success)
 database:srem(bot_id.."PASTORE:Special:User"..msg.chat_id_, result.sender_user_id_)
 Reply_Status(msg,result.sender_user_id_,"reply","⌔︙تم تنزيله من رتبة العضو المميز .")  
@@ -3083,12 +3069,10 @@ tdcli_function ({ID = "GetMessage",chat_id_ = msg.chat_id_,message_id_ = tonumbe
 return false
 end
 if text and text:match("^تنزيل مميز @(.*)$") and Addictive(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local username = text:match("^تنزيل مميز @(.*)$") 
 function Function_PASTORE(extra, result, success)
 if result.id_ then
@@ -3102,24 +3086,20 @@ tdcli_function ({ID = "SearchPublicChat",username_ = username}, Function_PASTORE
 return false
 end
 if text and text:match("^تنزيل مميز (%d+)$") and Addictive(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local userid = text:match("^تنزيل مميز (%d+)$") 
 database:srem(bot_id.."PASTORE:Special:User"..msg.chat_id_, userid)
 Reply_Status(msg,userid,"reply","⌔︙تم تنزيله من رتبة العضو المميز .")  
 return false
 end  
 if text and text:match("رفع (.*)") and tonumber(msg.reply_to_message_id_) > 0 and Addictive(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end 
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end 
 local RTPA = text:match("رفع (.*)")
 if database:sismember(bot_id.."PASTORE:Coomds"..msg.chat_id_,RTPA) then
 function by_reply(extra, result, success)   
@@ -3146,12 +3126,10 @@ tdcli_function ({ ID = "GetMessage", chat_id_ = msg.chat_id_, message_id_ = tonu
 end
 end
 if text and text:match("تنزيل (.*)") and tonumber(msg.reply_to_message_id_) > 0 and Addictive(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end 
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end 
 local RTPA = text:match("تنزيل (.*)")
 if database:sismember(bot_id.."PASTORE:Coomds"..msg.chat_id_,RTPA) then
 function by_reply(extra, result, success)   
@@ -3178,12 +3156,10 @@ tdcli_function ({ ID = "GetMessage", chat_id_ = msg.chat_id_, message_id_ = tonu
 end
 end
 if text and text:match("^رفع (.*) @(.*)") and Addictive(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end 
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end 
 local text1 = {string.match(text, "^(رفع) (.*) @(.*)$")}
 if database:sismember(bot_id.."PASTORE:Coomds"..msg.chat_id_,text1[2]) then
 function py_username(extra, result, success)   
@@ -3213,12 +3189,10 @@ tdcli_function ({ID = "SearchPublicChat",username_ = text1[3]},py_username,nil)
 end 
 end
 if text and text:match("^تنزيل (.*) @(.*)") and Addictive(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end 
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end 
 local text1 = {string.match(text, "^(تنزيل) (.*) @(.*)$")}
 if database:sismember(bot_id.."PASTORE:Coomds"..msg.chat_id_,text1[2]) then
 function py_username(extra, result, success)   
@@ -4743,6 +4717,10 @@ database:del(bot_id.."PASTORE:Mod:User"..msg.chat_id_)
 database:del(bot_id.."PASTORE:Special:User"..msg.chat_id_)
 end
 if text == "تاك للكل" and Addictive(msg) then
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 tdcli_function({ID = "GetChannelMembers",channel_id_ = msg.chat_id_:gsub("-100",""), offset_ = 0,limit_ = 200},function(ta,BROK)
 local t = "\n⌔︙قائمة الاعضاء .\n- - - - -\n"
 x = 0
@@ -4760,6 +4738,10 @@ end,nil)
 end
 
 if text == "رتبتي" then
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local rtp = database:get(bot_id.."PASTORE:Comd:New:rt:User:"..msg.chat_id_..msg.sender_user_id_) or Get_Rank(msg.sender_user_id_,msg.chat_id_)
 send(msg.chat_id_, msg.id_,"⌔︙رتبتك بالبوت : "..rtp)
 end
@@ -4879,6 +4861,10 @@ tdcli_function ({ID = "GetMessage",chat_id_ = msg.chat_id_,message_id_ = tonumbe
 end
 if text and text:match("^كشف القيود @(.*)") and Owner(msg) then 
 local username = text:match("^كشف القيود @(.*)") 
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 function Function_PASTORE(extra, result, success)
 if result.id_ then
 if database:sismember(bot_id.."PASTORE:Muted:User"..msg.chat_id_,result.id_) then
@@ -4905,6 +4891,10 @@ tdcli_function ({ID = "SearchPublicChat",username_ = username}, Function_PASTORE
 end
 
 if text == "كشف القيود" and Owner(msg) then 
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 function Function_PASTORE(extra, result, success)
 if database:sismember(bot_id.."PASTORE:Muted:User"..msg.chat_id_,result.sender_user_id_) then
 Muted = "مكتوم"
@@ -4969,6 +4959,10 @@ end
 end,nil)   
 end
 if text ==("المنشئ") then
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 tdcli_function ({ID = "GetChannelMembers",channel_id_ = msg.chat_id_:gsub("-100",""),filter_ = {ID = "ChannelMembersAdministrators"},offset_ = 0,limit_ = 100},function(arg,data) 
 local admins = data.members_
 for i=0 , #admins do
@@ -5049,10 +5043,91 @@ name = math.random(#namebot)
 send(msg.chat_id_, msg.id_, namebot[name]) 
 return false 
 end
+if text and text:match("^تغيير الاشتراك$") then
+if not DevPASTORE(msg) then
+send(msg.chat_id_,msg.id_,' هذا الامر خاص المطور الاساسي فقط')
+return false
+end
+database:setex(bot_id.."add:ch:jm" .. msg.chat_id_ .. "" .. msg.sender_user_id_, 360, true)  
+send(msg.chat_id_, msg.id_, '• حسنا ارسل لي معرف القناة') 
+return false  
+end
+if text and text:match("^تغيير رساله الاشتراك$") then
+if not DevPASTORE(msg) then
+send(msg.chat_id_,msg.id_,' هذا الامر خاص المطور الاساسي فقط')
+return false
+end
+database:setex(bot_id.."textch:user" .. msg.chat_id_ .. "" .. msg.sender_user_id_, 360, true)  
+send(msg.chat_id_, msg.id_, '• حسنا ارسل لي النص الذي تريده') 
+return false  
+end
+if text == "حذف رساله الاشتراك" then
+if not DevPASTORE(msg) then
+send(msg.chat_id_,msg.id_,' هذا الامر خاص المطور الاساسي فقط')
+return false
+end
+database:del(bot_id..'text:ch:user')
+send(msg.chat_id_, msg.id_, "• تم مسح رساله الاشتراك ") 
+return false  
+end
+if text and text:match("^وضع قناة الاشتراك$") then
+if not DevPASTORE(msg) then
+send(msg.chat_id_,msg.id_,' هذا الامر خاص المطور الاساسي فقط')
+return false
+end
+database:setex(bot_id.."add:ch:jm" .. msg.chat_id_ .. "" .. msg.sender_user_id_, 360, true)  
+send(msg.chat_id_, msg.id_, '• حسنا ارسل لي معرف القناة') 
+return false  
+end
+if text == "تفعيل الاشتراك" then
+if not DevPASTORE(msg) then
+send(msg.chat_id_,msg.id_,' هذا الامر خاص المطور الاساسي فقط')
+return false
+end
+if database:get(bot_id..'add:ch:id') then
+local addchusername = database:get(bot_id..'add:ch:username')
+send(msg.chat_id_, msg.id_,"• الاشتراك الاجباري مفعل \n على القناة ⇠ ["..addchusername.."]")
+else
+database:setex(bot_id.."add:ch:jm" .. msg.chat_id_ .. "" .. msg.sender_user_id_, 360, true)  
+send(msg.chat_id_, msg.id_," لا يوجد قناة للاشتراك الاجباري")
+end
+return false  
+end
+if text == "تعطيل الاشتراك" then
+if not DevPASTORE(msg) then
+send(msg.chat_id_,msg.id_,' هذا الامر خاص المطور الاساسي فقط')
+return false
+end
+database:del(bot_id..'add:ch:id')
+database:del(bot_id..'add:ch:username')
+send(msg.chat_id_, msg.id_, "• تم تعطيل الاشتراك الاجباري ") 
+return false  
+end
+if text == "الاشتراك الاجباري" then
+if not DevPASTORE(msg) then 
+send(msg.chat_id_,msg.id_,' هذا الامر خاص المطور الاساسي فقط')
+return false
+end
+if database:get(bot_id..'add:ch:username') then
+local addchusername = database:get(bot_id..'add:ch:username')
+send(msg.chat_id_, msg.id_, "• تم تفعيل الاشتراك الاجباري \n على القناة ⇠ ["..addchusername.."]")
+else
+send(msg.chat_id_, msg.id_, "• لا يوجد قناة في الاشتراك الاجباري ") 
+end
+return false  
+end
 
-if text == "بوت" then
-Namebot = (database:get(bot_id.."PASTORE:Name:Bot") or "باستوري")
-send(msg.chat_id_, msg.id_," ["..Namebot.."] ") 
+if text == 'بوت' then
+Namebot = (database:get(bot_id..'Name:Bot') or 'باستوري')
+local nameee = {
+'اسمي '..Namebot..'',
+'راح نموت بكورونا ونته بعدك تصيح بوت',
+'لتخليني ارجع لحركاتي لقديمه وردا ترا اسمي '..Namebot,
+'لتكول بوت اسمي '..Namebot..' 😒🔪',
+'صيحولي '..Namebot..' كافي بوت 😒🔪',
+'اسمي القميل '..Namebot..' 😚♥️'
+}
+send(msg.chat_id_, msg.id_,nameee[math.random(#nameee)])
 end
 if text == "تغير اسم البوت" or text == "تغيير اسم البوت" then 
 if DevPASTORE(msg) then
@@ -5536,6 +5611,10 @@ send(msg.chat_id_, msg.id_,'⌔︙تم تعيين الايدي .')
 end
 
 if text == 'ايدي' and tonumber(msg.reply_to_message_id_) == 0 and not database:get(bot_id..'PASTORE:Lock:ID:Bot'..msg.chat_id_) then
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 if not database:sismember(bot_id..'PASTORE:Spam:Group'..msg.sender_user_id_,text) then
 database:sadd(bot_id.."PASTORE:Spam:Group"..msg.sender_user_id_,text) 
 tdcli_function ({ID = "GetUserProfilePhotos",user_id_ = msg.sender_user_id_,offset_ = 0,limit_ = 1},function(extra,BROK,success) 
@@ -6065,8 +6144,15 @@ database:set(bot_id.."aaaZaa:Lock:Games"..msg.chat_id_,true)
 send(msg.chat_id_, msg.id_,"\n⌔︙تم تفعيل الالعاب .") 
 end
 if text == 'الالعاب' then
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 Teext = [[
-    ⌔︙اهلا بك في قائمة الالعاب .
+⌔︙تفعيل الالعاب • لتفعيل العبه ° 
+⌔︙ تعطيل الالعاب • لتعطيل العبه °
+- - - - -
+⌔︙اهلا بك في قائمة الالعاب 
 - - - - -
 ⌔︙بات .
 ⌔︙تخمين .
@@ -6078,6 +6164,7 @@ Teext = [[
 ⌔︙حزورة .
 ⌔︙معاني .
 - - - - -
+[𝑷𝒂𝑺𝒕𝑶𝒓𝑬 𝘴𝘰𝘳𝘶𝘤𝘦](https://t.me/ieeo3s)
 ]]
 send(msg.chat_id_, msg.id_,Teext) 
 end
@@ -6087,6 +6174,10 @@ local Text = '⌔︙عدد رسائلك : '..nummsg..' .'
 send(msg.chat_id_, msg.id_,Text) 
 end
 if text == 'مسح رسائلي' then
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 database:del(bot_id..'PASTORE:messageUser'..msg.chat_id_..':'..msg.sender_user_id_)
 local Text = '⌔︙تم مسح كل رسائلك .'
 send(msg.chat_id_, msg.id_,Text) 
@@ -6379,6 +6470,10 @@ File:close()
 sendDocument(msg.chat_id_, msg.id_,'./File_Libs/'..bot_id..'.json', '⌔︙عدد كروبات البوت : { '..#list..'} .')
 end
 if text == 'المطور' or text == 'مطور' or text == 'المطورين' then
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local Text_Dev = database:get(bot_id..'PASTORE:Text_Dev')
 if Text_Dev then 
 send(msg.chat_id_, msg.id_,Text_Dev)
@@ -6525,11 +6620,19 @@ tdcli_function ({ ID = "GetMessage", chat_id_ = msg.chat_id_, message_id_ = tonu
 end
 end
 if text == "الساعة" then
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local yytesj20 = "\n الساعة الان : "..os.date("%I:%M%p")
 send(msg.chat_id_, msg.id_,yytesj20)
 end
 
 if text == "التاريخ" then
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local cfhoog =  "\n التاريخ : "..os.date("%Y/%m/%d")
 send(msg.chat_id_, msg.id_,cfhoog)
 end
@@ -6539,13 +6642,17 @@ dofile("PASTORE.lua")
 send(msg.chat_id_, msg.id_, "⌔︙تم التحديث بنجاح .")
 end
 if text == 'السورس' or text == 'سورس' or text == 'ياسورس' or text == 'يا سورس' then  
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 Text = [[
 ┌───────  ───────┐
 ⌔︙*𝘸𝘦𝘭𝘤𝘰𝘮𝘦 𝘵𝘰 𝘴𝘰𝘶𝘳𝘤𝘦 𝑷𝒂𝑺𝒕𝑶𝒓𝑬*
     ┈┈┈┈┈┈┈┈┈┈┈┈┈┈
 ⌔︙[𝘱𝘢𝘴𝘵𝘰𝘳𝘦 𝘵𝘦𝘢𝘮](https://t.me/ieeo3s)
     ┈┈┈┈┈┈┈┈┈┈┈┈┈┈
-⌔︙[𝘪𝘯𝘧𝘰𝘳𝘮𝘢𝘵𝘪𝘰𝘯 𝘱𝘢𝘴𝘵𝘰𝘳𝘦](https://t.me/TKSLX)
+⌔︙[𝘪𝘯??𝘰𝘳𝘮𝘢𝘵𝘪𝘰𝘯 𝘱𝘢𝘴𝘵𝘰𝘳𝘦](https://t.me/TKSLX)
     ┈┈┈┈┈┈┈┈┈┈┈┈┈┈
 ⌔︙[𝘥𝘦𝘷𝘦𝘭𝘰𝘱𝘦𝘳](https://t.me/XPKKK)
     ┈┈┈┈┈┈┈┈┈┈┈┈┈┈
@@ -6561,6 +6668,10 @@ Text = [[
 send(msg.chat_id_, msg.id_,Text)
 end
 if text == 'الاوامر' or text == 'اوامر' or text == 'الأوامر' then
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 if Addictive(msg) then
 local Text =[[
     ⌔︙اهلا بك في قسم الاوامر .
@@ -6581,7 +6692,7 @@ keyboard.inline_keyboard = {
 {text = '- اوامر التعطيل .', callback_data=msg.sender_user_id_.."/homeaddrem"},{text = '- اوامر القفل .', callback_data=msg.sender_user_id_.."/homelocks"},
 },
 {
-{text = '- Source PASTORE .', url = "https://t.me/ieeo3s"}
+{text = '- 𝑷𝒂𝑺𝒕𝑶𝒓𝑬 𝘴𝘰𝘳𝘶𝘤𝘦 .', url = "https://t.me/ieeo3s"}
 },
 }
 local msg_id = msg.id_/2097152/0.5
@@ -6590,6 +6701,10 @@ end
 end
 
 if text == 'م1' and Addictive(msg) then
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 Text = [[
 ⌔︙اوامر حمايه المجموعه
 — — — — — — — — — 
@@ -6622,11 +6737,16 @@ Text = [[
 ⌔︙الكلايش
 ⌔︙السيلفي
 — — — — — — — — — 
+[𝑷𝒂𝑺𝒕𝑶𝒓𝑬 𝘴𝘰𝘳𝘶𝘤𝘦](https://t.me/ieeo3s)
 ]]
 send(msg.chat_id_, msg.id_,Text)
 return false
 end
 if text == 'م2' and Addictive(msg) then
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 Text = [[
 ⌔︙اوامر الادمنيه
 — — — — — — — — —  
@@ -6684,11 +6804,16 @@ Text = [[
 ⌔︙مسح الصلاحيات
 ⌔︙مسح الرابط
 — — — — — — — — — 
+[𝑷𝒂𝑺𝒕𝑶𝒓𝑬 𝘴𝘰𝘳𝘶𝘤𝘦](https://t.me/ieeo3s)
 ]]
 send(msg.chat_id_, msg.id_,Text)
 return false
 end
 if text == 'م3' and Owner(msg) then
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 Text = [[
 ⌔︙اوامر المدير
 — — — — — — — — — 
@@ -6721,11 +6846,16 @@ Text = [[
 ⌔︙تفعيل/تعطيل اوامر التحشيش
 ⌔︙تفعيل/تعطيل الرابط/جلب الرابط
 — — — — — — — — — 
+[𝑷𝒂𝑺𝒕𝑶𝒓𝑬 𝘴𝘰𝘳𝘶𝘤𝘦](https://t.me/ieeo3s)
 ]]
 send(msg.chat_id_, msg.id_,Text)
 return false
 end
 if text == 'م4' and Constructor(msg) then
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 Text = [[
 ⌔︙اوامر المنشئين الاساسين 
 — — — — — — — — — 
@@ -6747,11 +6877,16 @@ Text = [[
 ⌔︙اضف رسائل + العدد بالرد
 ⌔︙اضف مجوهرات + العدد بالرد
 — — — — — — — — — 
+[𝑷𝒂𝑺𝒕𝑶𝒓𝑬 𝘴𝘰𝘳𝘶𝘤𝘦](https://t.me/ieeo3s)
 ]]
 send(msg.chat_id_, msg.id_,Text)
 return false
 end
 if text == 'م5' and DevBot(msg) then
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 Text = [[
 ⌔︙اوامر المطور الاساسي  
 — — — — — — — — — 
@@ -6796,11 +6931,16 @@ Text = [[
 ⌔︙رفع/تنزيل منشئ اساسي
 ⌔︙مسح المنشئين الاساسين
 — — — — — — — — — 
+[𝑷𝒂𝑺𝒕𝑶𝒓𝑬 𝘴𝘰𝘳𝘶𝘤𝘦](https://t.me/ieeo3s)
 ]]
 send(msg.chat_id_, msg.id_,Text)
 return false
 end
 if text == 'اوامر القفل' and Addictive(msg) then
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local Texti = '⌔︙يمكنك قفل وفتح الاوامر ادناه عبر الضغط على الزر .'
 keyboard = {} 
 keyboard.inline_keyboard = {
@@ -6874,13 +7014,17 @@ keyboard.inline_keyboard = {
 {text = '- قفل الانلاين .', callback_data=msg.sender_user_id_.."/lockinlene"},{text = '- فتح الانلاين .', callback_data=msg.sender_user_id_.."/unlockinlene"},
 },
 {
-{text = '- Source PASTORE .', url = "https://t.me/ieeo3s"}
+{text = '- 𝑷𝒂𝑺𝒕𝑶𝒓𝑬 𝘴𝘰𝘳𝘶𝘤𝘦 .', url = "https://t.me/ieeo3s"}
 },
 }
 local msg_id = msg.id_/2097152/0.5
 https.request("https://api.telegram.org/bot"..token..'/sendMessage?chat_id=' .. msg.chat_id_ .. '&text=' .. URL.escape(Texti).."&reply_to_message_id="..msg_id.."&parse_mode=markdown&disable_web_page_preview=true&reply_markup="..JSON.encode(keyboard))
 end
 if text == 'اوامر التعطيل' and Addictive(msg) then
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 local Texti = '⌔︙اختر الامر الذي تريده من الازرار بلاسفل .'
 keyboard = {} 
 keyboard.inline_keyboard = {
@@ -6918,7 +7062,7 @@ keyboard.inline_keyboard = {
 {text = '- تعطيل الردود .', callback_data=msg.sender_user_id_..msg.sender_user_id_.."/lockrepgr"},{text = '- تفعيل الردود .', callback_data=msg.sender_user_id_.."/unlockrepgr"},
 },
 {
-{text = '- Source PASTORE .', url = "https://t.me/ieeo3s"}
+{text = '- 𝑷𝒂𝑺𝒕𝑶𝒓𝑬 𝘴𝘰𝘳𝘶𝘤𝘦 .', url = "https://t.me/ieeo3s"}
 },
 }
 local msg_id = msg.id_/2097152/0.5
@@ -6929,12 +7073,10 @@ end
 end ---- Chat_Type = 'GroupBot' 
 end ---- Chat_Type = 'GroupBot' 
 if text == 'تفعيل' and DevBot(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 if msg.can_be_deleted_ == false then 
 send(msg.chat_id_, msg.id_,'⌔︙اني مو ادمن يحلو .') 
 return false  
@@ -6991,12 +7133,10 @@ end,nil)
 end,nil)
 end
 if text == 'تعطيل' and DevBot(msg) then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 tdcli_function ({ID = "GetUser",user_id_ = msg.sender_user_id_},function(extra,result,success)
 tdcli_function({ID ="GetChat",chat_id_=msg.chat_id_},function(arg,chat)  
 if not database:sismember(bot_id..'PASTORE:Chek:Groups',msg.chat_id_) then
@@ -7035,12 +7175,10 @@ end,nil)
 end,nil) 
 end
 if text == 'تفعيل' and not DevBot(msg) and not database:get(bot_id..'PASTORE:Free:Add:Bots') then 
-local res = https.request('https://brok-aapi.ml/API/Sub.php?id='..msg.sender_user_id_)
-if res then
-if res == 'false' then
-send(msg.chat_id_,msg.id_,'⌔︙اشترك بقناة السورس وارجع دز الامر عمري .\n⌔︙قناة السورس : @nn1nnn .')   
-return false 
-end end
+if AddChannel(msg.sender_user_id_) == false then
+send(msg.chat_id_,msg.id_,'⌔︙بليز اشترك بالقناة البوت واستخدم البوت. \n⌔︙قناة البوت 📁\n• ['..database:get(bot_id..'add:ch:username')..'] ⚜️')   
+return false
+end
 if msg.can_be_deleted_ == false then 
 send(msg.chat_id_, msg.id_,'⌔︙اني مو ادمن يحلو .') 
 return false  
@@ -7125,6 +7263,8 @@ local keyboard = {
 {'⌔︙اذاعة .','⌔︙المطورين .','⌔︙اذاعة خاص .'},
 {'⌔︙اذاعة بالتوجيه .','⌔︙اذاعة بالتوجيه خاص .'},
 {'⌔︙تفعيل الاذاعة .','⌔︙تعطيل الاذاعة .'},
+{'⌔︙تفعيل الاشتراك .','⌔︙تعطيل الاشتراك .'},
+{'⌔︙تغيير الاشتراك .','⌔︙الاشتراك الاجباري .'},
 {'⌔︙مسح قائمة العام .','⌔︙مسح المطورين .'},
 {'⌔︙تعيين كليشة /start .','⌔︙حذف كليشة /start .'},
 {'⌔︙تعيين اسم البوت .'},
@@ -7420,6 +7560,80 @@ t = "⌔︙لا يوجد مطورين بالبوت ."
 end
 send(msg.chat_id_, msg.id_, t)
 end
+if text and text:match("^تغيير الاشتراك$") then
+if not DevPASTORE(msg) then
+send(msg.chat_id_,msg.id_,' هذا الامر خاص المطور الاساسي فقط')
+return false
+end
+database:setex(bot_id.."add:ch:jm" .. msg.chat_id_ .. "" .. msg.sender_user_id_, 360, true)  
+send(msg.chat_id_, msg.id_, '• حسنا ارسل لي معرف القناة') 
+return false  
+end
+if text and text:match("^تغيير رساله الاشتراك$") then
+if not DevPASTORE(msg) then
+send(msg.chat_id_,msg.id_,' هذا الامر خاص المطور الاساسي فقط')
+return false
+end
+database:setex(bot_id.."textch:user" .. msg.chat_id_ .. "" .. msg.sender_user_id_, 360, true)  
+send(msg.chat_id_, msg.id_, '• حسنا ارسل لي النص الذي تريده') 
+return false  
+end
+if text == "حذف رساله الاشتراك" then
+if not DevPASTORE(msg) then
+send(msg.chat_id_,msg.id_,' هذا الامر خاص المطور الاساسي فقط')
+return false
+end
+database:del(bot_id..'text:ch:user')
+send(msg.chat_id_, msg.id_, "• تم مسح رساله الاشتراك ") 
+return false  
+end
+if text and text:match("^وضع قناة الاشتراك$") then
+if not DevPASTORE(msg) then
+send(msg.chat_id_,msg.id_,' هذا الامر خاص المطور الاساسي فقط')
+return false
+end
+database:setex(bot_id.."add:ch:jm" .. msg.chat_id_ .. "" .. msg.sender_user_id_, 360, true)  
+send(msg.chat_id_, msg.id_, '• حسنا ارسل لي معرف القناة') 
+return false  
+end
+if text == "تفعيل الاشتراك" then
+if not DevPASTORE(msg) then
+send(msg.chat_id_,msg.id_,' هذا الامر خاص المطور الاساسي فقط')
+return false
+end
+if database:get(bot_id..'add:ch:id') then
+local addchusername = database:get(bot_id..'add:ch:username')
+send(msg.chat_id_, msg.id_,"• الاشتراك الاجباري مفعل \n على القناة ⇠ ["..addchusername.."]")
+else
+database:setex(bot_id.."add:ch:jm" .. msg.chat_id_ .. "" .. msg.sender_user_id_, 360, true)  
+send(msg.chat_id_, msg.id_," لا يوجد قناة للاشتراك الاجباري")
+end
+return false  
+end
+if text == "تعطيل الاشتراك" then
+if not DevPASTORE(msg) then
+send(msg.chat_id_,msg.id_,' هذا الامر خاص المطور الاساسي فقط')
+return false
+end
+database:del(bot_id..'add:ch:id')
+database:del(bot_id..'add:ch:username')
+send(msg.chat_id_, msg.id_, "• تم تعطيل الاشتراك الاجباري ") 
+return false  
+end
+if text == "الاشتراك الاجباري" then
+if not DevPASTORE(msg) then 
+send(msg.chat_id_,msg.id_,' هذا الامر خاص المطور الاساسي فقط')
+return false
+end
+if database:get(bot_id..'add:ch:username') then
+local addchusername = database:get(bot_id..'add:ch:username')
+send(msg.chat_id_, msg.id_, "• تم تفعيل الاشتراك الاجباري \n على القناة ⇠ ["..addchusername.."]")
+else
+send(msg.chat_id_, msg.id_, "• لا يوجد قناة في الاشتراك الاجباري ") 
+end
+return false  
+end
+
 if text == '⌔︙نسخة احتياطية .' then
 local list = database:smembers(bot_id..'PASTORE:Chek:Groups')  
 local t = '{"BOT_ID": '..bot_id..',"GP_BOT":{'  
@@ -7561,7 +7775,7 @@ function tdcli_update_callback(data)
     {text = 'الاوامر الرئيسية', callback_data=data.sender_user_id_.."/help"},
     },
     {
-{text = '- Source PASTORE .', url = "https://t.me/ieeo3s"}
+{text = '- 𝑷𝒂𝑺𝒕𝑶𝒓𝑬 𝘴𝘰𝘳𝘶𝘤𝘦 .', url = "https://t.me/ieeo3s"}
 },
     }
     return https.request("https://api.telegram.org/bot"..token..'/editMessageText?chat_id='..Chat_id..'&text='..URL.escape(Teext)..'&message_id='..msg_idd..'&parse_mode=markdown&disable_web_page_preview=true&reply_markup='..JSON.encode(keyboard)) 
@@ -7642,7 +7856,7 @@ function tdcli_update_callback(data)
     {text = 'الاوامر الرئيسية', callback_data=data.sender_user_id_.."/help"},
     },
     {
-{text = '- Source PASTORE .', url = "https://t.me/ieeo3s"}
+{text = '- 𝑷𝒂𝑺𝒕𝑶𝒓𝑬 𝘴𝘰𝘳𝘶𝘤𝘦 .', url = "https://t.me/ieeo3s"}
 },
     }
     return https.request("https://api.telegram.org/bot"..token..'/editMessageText?chat_id='..Chat_id..'&text='..URL.escape(Teext)..'&message_id='..msg_idd..'&parse_mode=markdown&disable_web_page_preview=true&reply_markup='..JSON.encode(keyboard)) 
@@ -7698,7 +7912,7 @@ function tdcli_update_callback(data)
     {text = 'الاوامر الرئيسية', callback_data=data.sender_user_id_.."/help"},
     },
     {
-{text = '- Source PASTORE .', url = "https://t.me/ieeo3s"}
+{text = '- 𝑷𝒂𝑺𝒕𝑶𝒓𝑬 𝘴𝘰𝘳𝘶𝘤𝘦 .', url = "https://t.me/ieeo3s"}
 },
     }
     return https.request("https://api.telegram.org/bot"..token..'/editMessageText?chat_id='..Chat_id..'&text='..URL.escape(Teext)..'&message_id='..msg_idd..'&parse_mode=markdown&disable_web_page_preview=true&reply_markup='..JSON.encode(keyboard)) 
@@ -7743,7 +7957,7 @@ function tdcli_update_callback(data)
     {text = 'الاوامر الرئيسية', callback_data=data.sender_user_id_.."/help"},
     },
     {
-{text = '- Source PASTORE .', url = "https://t.me/ieeo3s"}
+{text = '- 𝑷𝒂𝑺𝒕𝑶𝒓𝑬 𝘴𝘰𝘳𝘶𝘤𝘦 .', url = "https://t.me/ieeo3s"}
 },
     }
     return https.request("https://api.telegram.org/bot"..token..'/editMessageText?chat_id='..Chat_id..'&text='..URL.escape(Teext)..'&message_id='..msg_idd..'&parse_mode=markdown&disable_web_page_preview=true&reply_markup='..JSON.encode(keyboard)) 
@@ -7812,7 +8026,7 @@ function tdcli_update_callback(data)
     {text = 'الاوامر الرئيسية', callback_data=data.sender_user_id_.."/help"},
     },
     {
-{text = '- Source PASTORE .', url = "https://t.me/ieeo3s"}
+{text = '- 𝑷𝒂𝑺𝒕𝑶𝒓𝑬 𝘴𝘰𝘳𝘶𝘤𝘦 .', url = "https://t.me/ieeo3s"}
 },
     }
     return https.request("https://api.telegram.org/bot"..token..'/editMessageText?chat_id='..Chat_id..'&text='..URL.escape(Teext)..'&message_id='..msg_idd..'&parse_mode=markdown&disable_web_page_preview=true&reply_markup='..JSON.encode(keyboard)) 
@@ -7845,7 +8059,7 @@ function tdcli_update_callback(data)
     {text = 'اوامر التعطيل', callback_data=data.sender_user_id_.."/homeaddrem"},{text = 'اوامر القفل', callback_data=data.sender_user_id_.."/homelocks"},
     },
     {
-{text = '- Source PASTORE .', url = "https://t.me/ieeo3s"}
+{text = '- 𝑷𝒂𝑺𝒕𝑶𝒓𝑬 𝘴𝘰𝘳𝘶𝘤𝘦 .', url = "https://t.me/ieeo3s"}
 },
     }
     return https.request("https://api.telegram.org/bot"..token..'/editMessageText?chat_id='..Chat_id..'&text='..URL.escape(Teext)..'&message_id='..msg_idd..'&parse_mode=markdown&disable_web_page_preview=true&reply_markup='..JSON.encode(keyboard)) 
@@ -8160,7 +8374,7 @@ function tdcli_update_callback(data)
     {text = 'رجوع', callback_data=data.sender_user_id_.."/help"},
     },
     {
-{text = '- Source PASTORE .', url = "https://t.me/ieeo3s"}
+{text = '- 𝑷𝒂𝑺𝒕𝑶𝒓𝑬 𝘴𝘰𝘳𝘶𝘤𝘦 .', url = "https://t.me/ieeo3s"}
 },
     }
     return https.request("https://api.telegram.org/bot"..token..'/editMessageText?chat_id='..Chat_id..'&text='..URL.escape(Texti)..'&message_id='..msg_idd..'&parse_mode=markdown&disable_web_page_preview=true&reply_markup='..JSON.encode(keyboard)) 
@@ -8800,7 +9014,7 @@ function tdcli_update_callback(data)
     {text = 'رجوع', callback_data=data.sender_user_id_.."/help"},
     },
     {
-{text = '- Source PASTORE .', url = "https://t.me/ieeo3s"}
+{text = '- 𝑷𝒂𝑺𝒕𝑶𝒓𝑬 𝘴𝘰𝘳𝘶𝘤𝘦 .', url = "https://t.me/ieeo3s"}
 },
     }
     return https.request("https://api.telegram.org/bot"..token..'/editMessageText?chat_id='..Chat_id..'&text='..URL.escape(Texti)..'&message_id='..msg_idd..'&parse_mode=markdown&disable_web_page_preview=true&reply_markup='..JSON.encode(keyboard)) 
