@@ -3440,12 +3440,34 @@ database:srem(bot_id.."PASTORE:Muted:User"..msg.chat_id_, userid)
 Reply_Status(msg,userid,"reply","⌔︙تم الغاء كتمه .")  
 return false
 end
+if text == ("المقيدين") and Addictive(msg) then
+local list = database:smembers(bot_id..'Muted:User:kid'..msg.chat_id_)
+t = "\n *⌔︙قائمة المقيديين* \n*•━━━━━━ 𝑷𝑨 ━━━━━━━•*\n"
+for k,v in pairs(list) do
+local username = database:get(bot_id.."PASTORE:User:Name" .. v)
+if username then
+t = t..""..k.."- ([@"..username.."])\n"
+else
+t = t..""..k.."- (`"..v.."`)\n"
+end
+end
+if #list == 0 then
+t = " *⌔︙لا يوجد مقيدين*"
+end
+send(msg.chat_id_, msg.id_, t)
+end
+if text == 'مسح المقيدين' and Addictive(msg) then
+database:del(bot_id..'Muted:User:kid'..msg.chat_id_)
+send(msg.chat_id_, msg.id_, ' *⌔︙تم مسح المقيدين*')
+end
+
 
 if text == ("تقييد") and tonumber(msg.reply_to_message_id_) ~= 0 and Addictive(msg) then
 function Function_PASTORE(extra, result, success)
 if Rank_Checking(result.sender_user_id_, msg.chat_id_) then
 send(msg.chat_id_, msg.id_, "\n⌔︙لا يمكنك تقييد : ( "..Get_Rank(result.sender_user_id_,msg.chat_id_).." ) .")
 else
+database:sadd(bot_id..'Muted:User:kid'..msg.chat_id_, result.sender_user_id_)
 https.request("https://api.telegram.org/bot"..token.."/restrictChatMember?chat_id="..msg.chat_id_.."&user_id="..result.sender_user_id_)
 Reply_Status(msg,result.sender_user_id_,"reply","⌔︙تم تقييده بالكروب .")  
 end
@@ -3466,6 +3488,7 @@ if Rank_Checking(result.id_, msg.chat_id_) then
 send(msg.chat_id_, msg.id_, "\n⌔︙لا يمكنك تقييد : ( "..Get_Rank(result.id_,msg.chat_id_).." ) .")
 return false 
 end      
+database:sadd(bot_id..'Muted:User:kid'..msg.chat_id_, result.id_)
 https.request("https://api.telegram.org/bot"..token.."/restrictChatMember?chat_id="..msg.chat_id_.."&user_id="..result.id_)
 Reply_Status(msg,result.id_,"reply","⌔︙تم تقييده بالكروب .")  
 else
@@ -3481,6 +3504,7 @@ local userid = text:match("^تقييد (%d+)$")
 if Rank_Checking(userid, msg.chat_id_) then
 send(msg.chat_id_, msg.id_, "\n⌔︙لا يمكنك تقييد : ( "..Get_Rank(userid,msg.chat_id_).." ) .")
 else
+database:sadd(bot_id..'Muted:User:kid'..msg.chat_id_, userid)
 https.request("https://api.telegram.org/bot" .. token .. "/restrictChatMember?chat_id=" .. msg.chat_id_ .. "&user_id=" ..userid)
 Reply_Status(msg,userid,"reply","⌔︙تم تقييده بالكروب .")  
 end
@@ -3552,6 +3576,7 @@ end
 ------------------------------------------------------------------------
 if text == ("الغاء تقييد") and tonumber(msg.reply_to_message_id_) ~= 0 and Addictive(msg) then
 function Function_PASTORE(extra, result, success)
+database:srem(bot_id..'Muted:User:kid'..msg.chat_id_, result.sender_user_id_)
 https.request("https://api.telegram.org/bot" .. token .. "/restrictChatMember?chat_id=" .. msg.chat_id_ .. "&user_id=" .. result.sender_user_id_ .. "&can_send_messages=True&can_send_media_messages=True&can_send_other_messages=True&can_add_web_page_previews=True")
 Reply_Status(msg,result.sender_user_id_,"reply","⌔︙تم الغاء تقييده .")  
 end
@@ -3563,6 +3588,7 @@ if text and text:match("^الغاء تقييد @(.*)$") and Addictive(msg) then
 local username = text:match("^الغاء تقييد @(.*)$")
 function Function_PASTORE(extra, result, success)
 if result.id_ then
+database:srem(bot_id..'Muted:User:kid'..msg.chat_id_, result.id_)
 https.request("https://api.telegram.org/bot" .. token .. "/restrictChatMember?chat_id=" .. msg.chat_id_ .. "&user_id=" .. result.id_ .. "&can_send_messages=True&can_send_media_messages=True&can_send_other_messages=True&can_add_web_page_previews=True")
 Reply_Status(msg,result.id_,"reply","⌔︙تم الغاء تقييده .")  
 else
@@ -3575,6 +3601,7 @@ end
 ------------------------------------------------------------------------
 if text and text:match("^الغاء تقييد (%d+)$") and Addictive(msg) then
 local userid = text:match("^الغاء تقييد (%d+)$")
+database:srem(bot_id..'Muted:User:kid'..msg.chat_id_, userid)
 https.request("https://api.telegram.org/bot" .. token .. "/restrictChatMember?chat_id=" .. msg.chat_id_ .. "&user_id=" ..userid.. "&can_send_messages=True&can_send_media_messages=True&can_send_other_messages=True&can_add_web_page_previews=True")
 Reply_Status(msg,userid,"reply","⌔︙تم الغاء تقييده .")  
 return false
@@ -5721,7 +5748,7 @@ end
 send(msg.chat_id_, msg.id_,'⌔︙تم مسح : '..Number..' رسالة .')  
 end
 
-if text == 'ايدي' and tonumber(msg.reply_to_message_id_) > 0 and not database:get(bot_id..'PASTORE:Lock:ID:Bot'..msg.chat_id_) then
+if text == 'ايدي' and tonumber(msg.reply_to_message_id_) > 0 and not database:get(bot_id..'PASTORE:Lock:ID:Bot'..msg.chat_id_)  or text == 'كشف' and tonumber(msg.reply_to_message_id_) > 0 and not database:get(bot_id..'PASTORE:Lock:ID:Bot'..msg.chat_id_) then
 function Function_PASTORE(extra, result, success)
 tdcli_function ({ID = "GetUser",user_id_ = result.sender_user_id_},function(arg,data) 
 if data.first_name_ == false then
@@ -5747,7 +5774,7 @@ tdcli_function ({ID = "GetMessage",chat_id_ = msg.chat_id_,message_id_ = tonumbe
 return false
 end
 
-if text and text:match("^ايدي @(.*)$") and not database:get(bot_id..'PASTORE:Lock:ID:Bot'..msg.chat_id_) then
+if text and text:match("^ايدي @(.*)$") and not database:get(bot_id..'PASTORE:Lock:ID:Bot'..msg.chat_id_) or text and text:match("^كسف @(.*)$") and not database:get(bot_id..'PASTORE:Lock:ID:Bot'..msg.chat_id_) then
 local username = text:match("^ايدي @(.*)$")
 function Function_PASTORE(extra, result, success)
 if result.id_ then
@@ -6572,9 +6599,25 @@ os.execute("rm -fr PASTORE_Files/*")
 send(msg.chat_id_,msg.id_,"⌔︙تم حذف جميع الملفات .")
 return false
 end
+if text == 'السيرفر' and DevPASTORE(msg) then 
+send(msg.chat_id_, msg.id_, io.popen([[
+linux_version=`lsb_release -ds 2>/dev/null || cat /etc/*release 2>/dev/null | head -n1 || uname -om`
+memUsedPrc=`free -m | awk 'NR==2{printf "%sMB/%sMB {%.2f%}\n", $3,$2,$3*100/$2 }'`
+HardDisk=`df -lh | awk '{if ($6 == "/") { print $3"/"$2" ~ {"$5"}" }}'`
+CPUPer=`top -b -n1 | grep "Cpu(s)" | awk '{print $2 + $4}'`
+uptime=`uptime | awk -F'( |,|:)+' '{if ($7=="min") m=$6; else {if ($7~/^day/) {d=$6;h=$8;m=$9} else {h=$6;m=$7}}} {print d+0,"days,",h+0,"hours,",m+0,"minutes."}'`
+echo '📟l •⊱ { نظام التشغيل } ⊰•\n*»» '"$linux_version"'*' 
+echo '*------------------------------\n*🔖l •⊱ { الذاكره العشوائيه } ⊰•\n*»» '"$memUsedPrc"'%}*'
+echo '*------------------------------\n*💾l •⊱ { وحـده الـتـخـزيـن } ⊰•\n*»» '"$HardDisk"'*'
+echo '*------------------------------\n*⚙️l •⊱ { الـمــعــالــج } ⊰•\n*»» '"`grep -c processor /proc/cpuinfo`""Core ~ {$CPUPer%} "'*'
+echo '*------------------------------\n*📡l •⊱ { موقـع الـسـيـرفـر } ⊰•\n*»» '`curl http://th3boss.com/ip/location`'*'
+echo '*------------------------------\n*🔌l •⊱ { مـده تـشغيـل الـسـيـرفـر } ⊰•  \n*»» '"$uptime"'*'
+]]):read('*all'))  
+end
+
 if text == 'نقل الاحصائيات' and DevPASTORE(msg) then
-local Users = database:smembers('PASTORE:'..bot_id.."User_Bot")
-local Groups = database:smembers('PASTORE:'..bot_id..'Chek:Groups') 
+local Groups = database:smembers(bot_id..'Chek:Groups') 
+local Users = database:smembers(bot_id..'User_Bot') 
 for i = 1, #Groups do
 database:sadd(bot_id..'PASTORE:Chek:Groups',Groups[i])  
 end
@@ -7268,6 +7311,7 @@ local keyboard = {
 {'⌔︙مسح قائمة العام .','⌔︙مسح المطورين .'},
 {'⌔︙تعيين كليشة /start .','⌔︙حذف كليشة /start .'},
 {'⌔︙تعيين اسم البوت .'},
+{'⌔︙معلومات السيرفر'},
 {'⌔︙قائمة العام .'},
 {'⌔︙نسخة احتياطية .','⌔︙تحديث السورس .'},
 {'⌔︙الغاء .'}
@@ -7351,6 +7395,21 @@ if text =='⌔︙الاحصائيات .' then
 local Groups = database:scard(bot_id..'PASTORE:Chek:Groups')  
 local Users = database:scard(bot_id..'PASTORE:UsersBot')  
 send(msg.chat_id_, msg.id_,'⌔︙احصائيات البوت .\n\n⌔︙عدد الكروبات : '..Groups..' .\n⌔︙عدد المشتركين : '..Users..' .')
+end
+if text == '⌔︙معلومات السيرفر' and DevPASTOREW(msg) then 
+send(msg.chat_id_, msg.id_, io.popen([[
+linux_version=lsb_release -ds
+memUsedPrc=free -m | awk 'NR==2{printf "%sMB/%sMB {%.2f%}\n", $3,$2,$3*100/$2 }'
+HardDisk=df -lh | awk '{if ($6 == "/") { print $3"/"$2" ~ {"$5"}" }}'
+CPUPer=top -b -n1 | grep "Cpu(s)" | awk '{print $2 + $4}'
+uptime=uptime | awk -F'( |,|:)+' '{if ($7=="min") m=$6; else {if ($7~/^day/) {d=$6;h=$8;m=$9} else {h=$6;m=$7}}} {print d+0,"days,",h+0,"hours,",m+0,"minutes."}'
+echo '⇗ نظام التشغيل ⇖•\n*-›-› '"$linux_version"'*' 
+echo '*———————————~*\n✺✔{ الذاكره العشوائيه } ⇎\n*-›-› '"$memUsedPrc"'*'
+echo '*———————————~*\n✺✔{ وحـده الـتـخـزيـن } ⇎\n*-›-› '"$HardDisk"'*'
+echo '*———————————~*\n✺✔{ الـمــعــالــج } ⇎\n*-›-› '"grep -c processor /proc/cpuinfo""Core ~ {$CPUPer%} "'*'
+echo '*———————————~*\n✺✔{ الــدخــول } ⇎\n*-›-› 'whoami'*'
+echo '*———————————~*\n✺✔{ مـده تـشغيـل الـسـيـرفـر }⇎\n*-›-› '"$uptime"'*'
+]]):read('*all'))  
 end
 if text == "⌔︙تنظيف المشتركين ." then
 local pv = database:smembers(bot_id..'PASTORE:UsersBot')  
@@ -7560,7 +7619,7 @@ t = "⌔︙لا يوجد مطورين بالبوت ."
 end
 send(msg.chat_id_, msg.id_, t)
 end
-if text and text:match("^تغيير الاشتراك$") then
+if text and text:match("^⌔︙تغيير الاشتراك .$") then
 if not DevPASTORE(msg) then
 send(msg.chat_id_,msg.id_,' هذا الامر خاص المطور الاساسي فقط')
 return false
@@ -7596,7 +7655,7 @@ database:setex(bot_id.."add:ch:jm" .. msg.chat_id_ .. "" .. msg.sender_user_id_,
 send(msg.chat_id_, msg.id_, '• حسنا ارسل لي معرف القناة') 
 return false  
 end
-if text == "تفعيل الاشتراك" then
+if text == "⌔︙تفعيل الاشتراك ." then
 if not DevPASTORE(msg) then
 send(msg.chat_id_,msg.id_,' هذا الامر خاص المطور الاساسي فقط')
 return false
@@ -7610,7 +7669,7 @@ send(msg.chat_id_, msg.id_," لا يوجد قناة للاشتراك الاجب�
 end
 return false  
 end
-if text == "تعطيل الاشتراك" then
+if text == "⌔︙تعطيل الاشتراك ." then
 if not DevPASTORE(msg) then
 send(msg.chat_id_,msg.id_,' هذا الامر خاص المطور الاساسي فقط')
 return false
@@ -7620,7 +7679,7 @@ database:del(bot_id..'add:ch:username')
 send(msg.chat_id_, msg.id_, "• تم تعطيل الاشتراك الاجباري ") 
 return false  
 end
-if text == "الاشتراك الاجباري" then
+if text == "⌔︙الاشتراك الاجباري ." then
 if not DevPASTORE(msg) then 
 send(msg.chat_id_,msg.id_,' هذا الامر خاص المطور الاساسي فقط')
 return false
