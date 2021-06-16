@@ -3814,7 +3814,7 @@ return false
 end
 local link = database:get(bot_id.."PASTORE:Private:Group:Link"..msg.chat_id_)            
 if link then                              
-send(msg.chat_id_,msg.id_,"⌔︙LinK GrOup : \n ["..link.."]")                          
+send(msg.chat_id_,msg.id_,"- Link group :\n••━━━━━━━━━━••  \n ["..link.."]")                          
 else                
 local InviteLink = json:decode(https.request("https://api.telegram.org/bot"..token.."/getChat?chat_id="..msg.chat_id_))
 if InviteLink.result.invite_link then
@@ -3823,7 +3823,7 @@ elseif not InviteLink.result.invite_link then
 https.request("https://api.telegram.org/bot"..token.."/exportChatInviteLink?chat_id="..msg.chat_id_)
 jk = InviteLink.result.invite_link
 end 
-send(msg.chat_id_,msg.id_,"⌔︙LinK GrOup : \n ["..jk.."]")                          
+send(msg.chat_id_,msg.id_,"- Link group :\n••━━━━━━━━━━•• \n ["..jk.."]")                          
 end            
 end
 if text == "تفعيل جلب الرابط" or text == 'تفعيل الرابط' then
