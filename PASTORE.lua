@@ -3764,6 +3764,23 @@ local Num = text:match("^وضع زمن التكرار (%d+)$")
 database:hset(bot_id.."PASTORE:flooding:settings:"..msg.chat_id_ ,"floodtime" ,Num) 
 send(msg.chat_id_, msg.id_,"⌔︙تم تعيين وقت التكرار : ("..Num..") .") 
 end
+if text == "مسح الرابط" or text == "حذف الرابط" then
+if AddChannel(msg.sender_user_id_) == false then
+local textchuser = database:get(bot_id..'text:ch:user')
+if textchuser then
+send(msg.chat_id_, msg.id_,'['..textchuser..']')
+else
+send(msg.chat_id_, msg.id_,'⌔︙عـليك الاشـتࢪاك في قنـاة البـوت اولآ . \n ⌔︙قنـاة البـوت ←  ['..database:get(bot_id..'add:ch:username')..']')
+end
+return false
+end
+if Addictive(msg) then     
+send(msg.chat_id_,msg.id_,"⌔︙تم مسح الرابط ")           
+database:del(bot_id.."PASTORE:Private:Group:Link"..msg.chat_id_) 
+return false      
+end
+return false  
+end
 if text == "ضع رابط" or text == "وضع رابط" then
 if AddChannel(msg.sender_user_id_) == false then
 local textchuser = database:get(bot_id..'text:ch:user')
