@@ -3765,45 +3765,80 @@ database:hset(bot_id.."PASTORE:flooding:settings:"..msg.chat_id_ ,"floodtime" ,N
 send(msg.chat_id_, msg.id_,"⌔︙تم تعيين وقت التكرار : ("..Num..") .") 
 end
 if text == "ضع رابط" or text == "وضع رابط" then
+if AddChannel(msg.sender_user_id_) == false then
+local textchuser = database:get(bot_id..'text:ch:user')
+if textchuser then
+send(msg.chat_id_, msg.id_,'['..textchuser..']')
+else
+send(msg.chat_id_, msg.id_,'⌔︙عـليك الاشـتࢪاك في قنـاة البـوت اولآ . \n ⌔︙قنـاة البـوت ←  ['..database:get(bot_id..'add:ch:username')..']')
+end
+return false
+end
 if msg.reply_to_message_id_ == 0  and Addictive(msg) then  
-send(msg.chat_id_,msg.id_,"⌔︙ارسل الرابط الان .")
+send(msg.chat_id_,msg.id_,"⌔︙ارسل رابط المجموعه او رابط قناة المجموعه")
 database:setex(bot_id.."PASTORE:Set:Priovate:Group:Link"..msg.chat_id_..""..msg.sender_user_id_,120,true) 
 return false
 end
 end
-if text == "تفعيل جلب الرابط" or text == 'تفعيل الرابط' then
-if Addictive(msg) then  
-database:set(bot_id.."PASTORE:Link_Group"..msg.chat_id_,true) 
-send(msg.chat_id_, msg.id_,"⌔︙تم تفعيل جلب الرابط .") 
-return false  
-end
-end
-if text == "تعطيل جلب الرابط" or text == 'تعطيل الرابط' then
-if Addictive(msg) then  
-database:del(bot_id.."PASTORE:Link_Group"..msg.chat_id_) 
-send(msg.chat_id_, msg.id_,"⌔︙تم تعطيل جلب الرابط .") 
-return false end
-end
 if text == "الرابط" then 
+if AddChannel(msg.sender_user_id_) == false then
+local textchuser = database:get(bot_id..'text:ch:user')
+if textchuser then
+send(msg.chat_id_, msg.id_,'['..textchuser..']')
+else
+send(msg.chat_id_, msg.id_,'⌔︙عـليك الاشـتࢪاك في قنـاة البـوت اولآ . \n ⌔︙قنـاة البـوت ←  ['..database:get(bot_id..'add:ch:username')..']')
+end
+return false
+end
 local status_Link = database:get(bot_id.."PASTORE:Link_Group"..msg.chat_id_)
 if not status_Link then
-send(msg.chat_id_, msg.id_,"⌔︙جلب الرابط معطل .") 
+send(msg.chat_id_, msg.id_,"⌔︙جلب الرابط معطل") 
 return false  
 end
 local link = database:get(bot_id.."PASTORE:Private:Group:Link"..msg.chat_id_)            
 if link then                              
-send(msg.chat_id_,msg.id_,"⌔︙رابط الكروب .\n ["..link.."]")                          
+send(msg.chat_id_,msg.id_,"⌔︙LinK GrOup : \n ["..link.."]")                          
 else                
-send(msg.chat_id_, msg.id_,"⌔︙لا يوجد رابط ارسل وضع رابط .")              
+local InviteLink = json:decode(https.request("https://api.telegram.org/bot"..token.."/getChat?chat_id="..msg.chat_id_))
+if InviteLink.result.invite_link then
+jk = InviteLink.result.invite_link
+elseif not InviteLink.result.invite_link then
+https.request("https://api.telegram.org/bot"..token.."/exportChatInviteLink?chat_id="..msg.chat_id_)
+jk = InviteLink.result.invite_link
+end 
+send(msg.chat_id_,msg.id_,"⌔︙LinK GrOup : \n ["..jk.."]")                          
 end            
 end
-if text == "مسح الرابط" or text == "حذف الرابط" then
-if Addictive(msg) then     
-send(msg.chat_id_,msg.id_,"⌔︙تم مسح الرابط .")           
-database:del(bot_id.."PASTORE:Private:Group:Link"..msg.chat_id_) 
-return false      
+if text == "تفعيل جلب الرابط" or text == 'تفعيل الرابط' then
+if AddChannel(msg.sender_user_id_) == false then
+local textchuser = database:get(bot_id..'text:ch:user')
+if textchuser then
+send(msg.chat_id_, msg.id_,'['..textchuser..']')
+else
+send(msg.chat_id_, msg.id_,'⌔︙عـليك الاشـتࢪاك في قنـاة البـوت اولآ . \n ⌔︙قنـاة البـوت ←  ['..database:get(bot_id..'add:ch:username')..']')
 end
+return false
+end
+if Addictive(msg) then  
+database:set(bot_id.."PASTORE:Link_Group"..msg.chat_id_,true) 
+send(msg.chat_id_, msg.id_,"⌔︙تم تفعيل جلب الرابط المجموعه") 
 return false  
+end
+end
+if text == "تعطيل جلب الرابط" or text == 'تعطيل الرابط' then
+if AddChannel(msg.sender_user_id_) == false then
+local textchuser = database:get(bot_id..'text:ch:user')
+if textchuser then
+send(msg.chat_id_, msg.id_,'['..textchuser..']')
+else
+send(msg.chat_id_, msg.id_,'⌔︙عـليك الاشـتࢪاك في قنـاة البـوت اولآ . \n ⌔︙قنـاة البـوت ←  ['..database:get(bot_id..'add:ch:username')..']')
+end
+return false
+end
+if Addictive(msg) then  
+database:del(bot_id.."PASTORE:Link_Group"..msg.chat_id_) 
+send(msg.chat_id_, msg.id_,"⌔︙تم تعطيل جلب رابط المجموعه") 
+return false end
 end
 if text and text:match("^ضع صورة") and Addictive(msg) and msg.reply_to_message_id_ == 0 or text and text:match("^وضع صورة") and Addictive(msg) and msg.reply_to_message_id_ == 0 then  
 database:set(bot_id.."PASTORE:Change:Chat:Photo"..msg.chat_id_..":"..msg.sender_user_id_,true) 
